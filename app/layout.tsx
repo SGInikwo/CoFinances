@@ -17,6 +17,9 @@ const ibmPlexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   title: "CoFinance",
   description: "CoFinance is a web APP that helps in tracking your finances!",
+  icons: {
+    icon: 'icons/logo.svg'
+  }
 };
 
 export default function RootLayout({
