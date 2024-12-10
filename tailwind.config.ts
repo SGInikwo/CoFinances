@@ -13,7 +13,8 @@ const config: Config = {
   	extend: {
   		colors: {
 			financeBackground: "#F4F4F4",
-			financeGradient: "#99DE91",
+			financeGradient: "#50b545",
+			financeSidebar: "#F3FFF1",
   		},
 			fontFamily: {
 				"ibm-plex-serif": "var(--font-ibm-plex-serif)",

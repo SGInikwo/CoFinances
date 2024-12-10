@@ -71,11 +71,15 @@
 
   /* Home */
   .home {
-    @apply no-scrollbar flex w-full flex-row max-xl:max-h-screen max-xl:overflow-y-scroll;
+    @apply no-scrollbar flex w-full flex-row /*bg-financeBackground*/ max-xl:max-h-screen max-xl:overflow-y-scroll;
   }
 
   .home-content {
     @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-7 lg:py-12 xl:max-h-screen xl:overflow-y-scroll;
+  }
+
+  .home-header {
+    @apply flex flex-col justify-between gap-8;
   }
 
   .header-box {
@@ -90,7 +94,80 @@
     @apply text-14 lg:text-16 font-normal text-gray-600;
   }
 
-  .total-balance {
+  .current-balance {
     @apply flex w-full items-center gap-4 rounded-xl border border-gray-300 p-4 shadow-chart sm:gap-6 sm:p-6;
+  }
+
+  .current-balance-chart {
+    @apply flex size-full max-w-[100px] items-center sm:max-w-[120px];
+  }
+
+  .current-balance-label {
+    @apply text-14 font-medium text-gray-600;
+  }
+
+  .current-balance-amount {
+    @apply text-24 lg:text-30 flex-1 font-semibold text-gray-900;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    @apply sticky left-0 top-0 flex h-screen w-fit flex-col justify-between /*border-r border-gray-200*/ pt-8 text-white max-md:hidden sm:p-4 xl:p-6 2xl:w-[355px];
+  }
+
+  .sidebar-logo {
+    @apply 2xl:text-26 font-avro text-[22px] font-bold text-black max-xl:hidden xl:mr-6;
+  }
+
+  .sidebar-link {
+    @apply flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-full justify-center xl:justify-start;
+  }
+
+  .sidebar-label {
+    @apply text-16 font-semibold text-black max-xl:hidden;
+  }
+
+  /* Root Layout */
+  .root-layout {
+    @apply flex h-16 items-center justify-between p-5 shadow-creditCard /*bg-financeSidebar*/ sm:p-8 md:hidden;
+  }
+
+  /* Mobile nav */
+  .mobileNav-sheet {
+    @apply flex h-[calc(100vh-72px)] flex-col justify-between overflow-y-auto;
+  }
+
+  .mobileNav-sheet_close {
+    @apply flex gap-3 items-center p-4 rounded-lg w-full max-w-60;
+  }
+
+  /* Auth */
+  .auth-asset {
+    @apply flex h-screen w-full sticky top-0 items-center justify-end bg-sky-1 max-lg:hidden;
+  }
+
+  /* Auth Form */
+  .auth-form {
+    @apply flex min-h-screen w-full max-w-[420px] flex-col justify-center gap-5 py-10 md:gap-8;
+  }
+
+  .form-item {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .form-label {
+    @apply text-14 w-full max-w-[280px] font-medium text-gray-700;
+  }
+
+  .form-message {
+    @apply text-12 text-red-500;
+  }
+
+  .form-btn {
+    @apply text-16 rounded-lg border border-financeGradient bg-financeGradient font-semibold text-white shadow-form;
+  }
+
+  .form-link {
+    @apply text-14 cursor-pointer font-medium text-financeGradient;
   }
 }

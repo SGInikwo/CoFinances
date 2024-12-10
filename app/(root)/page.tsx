@@ -16,6 +16,7 @@ const Home = () => {
         />
 
         <CurrentBalanceBox
+          type = 'Balance'
           totalCurrentBalance={435.60}
           totalPreviousBalance = {520.54}
           totalTransactions = {30}
