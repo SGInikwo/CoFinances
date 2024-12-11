@@ -5,6 +5,12 @@ import { createAdminClient, createSessionClient } from "../appwrite"
 import { cookies } from "next/headers"
 import { parseStringify } from "../utils"
 
+const{
+  APPWRITE_DATABASE_ID: DATABASE_ID,
+  APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
+  APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_COLLECTION_ID
+} = process.env
+
 export const signIn = async ({ email, password }: signInProps) => {
   try {
     const { account } = await createAdminClient();
@@ -19,14 +25,30 @@ export const signIn = async ({ email, password }: signInProps) => {
 
 export const signUp = async (userData: SignUpParams) => {
   const { email, password, firstName, lastName } = userData;
-  try {
-    const { account } = await createAdminClient();
 
-    const newUserAccount =  await account.create(
+  let newUserAccount;
+
+  try {
+    const { account, database } = await createAdminClient();
+
+    newUserAccount =  await account.create(
       ID.unique(), 
       email, password, 
       `${firstName} ${lastName}`
     );
+
+    if(!newUserAccount) throw new Error('Error creating user');
+
+    const newUser = await database.createDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      ID.unique(),
+      {
+        ...userData,
+        userId: newUserAccount.$id,
+      }
+    );
+
     const session = await account.createEmailPasswordSession(email, password);
   
     cookies().set("appwrite-session", session.secret, {
@@ -36,7 +58,7 @@ export const signUp = async (userData: SignUpParams) => {
       secure: true,
     });
 
-    return parseStringify(newUserAccount);
+    return parseStringify(newUser);
 
   } catch (error) {
     console.error("Error", error)
