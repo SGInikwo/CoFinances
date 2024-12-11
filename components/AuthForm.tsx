@@ -23,6 +23,7 @@ import { authFormSchema } from '@/lib/utils'
 import { Loader2 } from 'lucide-react'
 import CustomMenue from './CustomMenue'
 import { useRouter } from 'next/navigation'
+import { signIn, signUp } from '@/lib/actions/user.actions'
 
 
 const AuthForm = ({ type }: {type: string}) => {
@@ -48,18 +49,18 @@ const AuthForm = ({ type }: {type: string}) => {
     try {
       // Sign Up
       if(type === 'sign-up') {
-        // const newUser = await SignUp(data)
+        const newUser = await signUp(data)
 
-        // setuser(newUser)
+        setuser(newUser)
       }
       // Sign In
       if(type === 'sign-in') {
-        // const response = await SignIn({
-        //   email: data.email,
-        //   password:data.password,
-        // })
+        const response = await signIn({
+          email: data.email,
+          password:data.password,
+        })
 
-        // if(response) router.push('/')
+        if(response) router.push('/')
 
       }
 

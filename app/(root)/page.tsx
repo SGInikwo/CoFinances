@@ -1,9 +1,13 @@
 import CurrentBalanceBox from '@/components/CurrentBalanceBox'
 import HeaderBox from '@/components/HeaderBox'
+import { getLoggedInUser } from '@/lib/actions/user.actions'
+import { redirect, useRouter } from 'next/navigation'
 import React from 'react'
 
-const Home = () => {
-  const loggedIn = { firstName: 'Gloria', lastName: 'Whunsun'}
+const Home = async () => {
+  const loggedIn = await getLoggedInUser();
+
+  if (!loggedIn) redirect('/sign-in')
 
   return (
     <section className='home'>
@@ -11,7 +15,7 @@ const Home = () => {
         <HeaderBox 
           type='greeting'
           title='Welcome'
-          user={loggedIn?.firstName || 'Guest'}
+          user={loggedIn?.name || 'Guest'}
           subtext= 'Access and manage your spending and savings'
         />
 
