@@ -3,14 +3,15 @@
 import React from 'react'
 import CountUp from 'react-countup';
 
-const AnimatedCounter = ({ amount }: { amount:number }) => {
+const AnimatedCounter = ({ amount, currency,  }: { amount:number, currency:string }) => {
   return (
     <div>
-      <CountUp className='w-full'
-        duration={2.75}
+      <CountUp
+        duration={.75}
         decimals={2}
         decimal=","
-        prefix="€" //₩$ 
+        prefix={currency} //₩$€
+        suffix=''
         end={amount} 
       />
       

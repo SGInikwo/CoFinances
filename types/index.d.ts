@@ -4,6 +4,7 @@ declare type SignUpParams = {
   currency?: string;
   email: string;
   password: string;
+  confirmPassword?: string;
 };
 
 declare interface signInProps {
@@ -34,6 +35,7 @@ declare interface HeaderBoxProps {
 
 declare interface CurrentBalanceBoxProps {
   type: string;
+  image_name: string;
   totalCurrentBalance: number;
   totalPreviousBalance: number;
   totalTransactions: number;
@@ -50,4 +52,8 @@ declare interface MobileNavProps {
 declare interface FooterProps {
   user: User;
   type?: 'mobile' | 'desktop'
+}
+
+declare interface getUserInfoProps {
+  userId: string;
 }

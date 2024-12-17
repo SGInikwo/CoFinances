@@ -14,9 +14,11 @@
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-popover": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.0",
+    "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.468.0",
     "next": "14.2.16",
     "node-appwrite": "^14.1.0",
@@ -26,6 +28,7 @@
     "react-hook-form": "^7.54.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "xlsx": "file:vendor/xlsx-0.20.3.tgz",
     "zod": "^3.24.0"
   },
   "devDependencies": {

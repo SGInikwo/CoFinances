@@ -94,16 +94,18 @@
     @apply text-14 lg:text-16 font-normal text-gray-600;
   }
 
+  /* Current balance */
   .current-balance {
-    @apply flex w-full items-center gap-4 rounded-xl border border-gray-300 p-4 shadow-chart sm:gap-6 sm:p-6;
+    @apply flex w-full items-center gap-1 rounded-3xl border border-gray-300 p-1 shadow-chart sm:gap-6 sm:p-6;
   }
 
   .current-balance-chart {
-    @apply flex size-full max-w-[100px] items-center sm:max-w-[120px];
+    @apply flex max-w-[20] items-center sm:max-w-[120px];
   }
 
   .current-balance-label {
-    @apply text-14 font-medium text-gray-600;
+    /* @apply text-14 font-medium text-gray-600; */
+    @apply max-laptop:text-16;
   }
 
   .current-balance-amount {
