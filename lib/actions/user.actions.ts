@@ -109,14 +109,14 @@ export const signUp = async ({ confirmPassword, ...userData}: SignUpParams) => {
       ]
     );
 
-    const session = await account.createEmailPasswordSession(email, password);
+    // const session = await account.createEmailPasswordSession(email, password);
   
-    cookies().set("appwrite-session", session.secret, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-    });
+    // cookies().set("appwrite-session", session.secret, {
+    //   path: "/",
+    //   httpOnly: true,
+    //   sameSite: "strict",
+    //   secure: true,
+    // });
 
     await create_JWT()
 

@@ -8,7 +8,7 @@ export default async function RootLayout({
   }>) {
     const loggedIn = await getLoggedInUser();
     
-    if(loggedIn || loggedIn.authLevel === -1) redirect('/')
+    if(loggedIn) redirect('/')
 
     return (
       <main>
