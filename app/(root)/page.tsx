@@ -8,7 +8,7 @@ import React from 'react'
 const Home = async () => {
   const loggedIn = await getLoggedInUser();
 
-  if (!loggedIn) redirect('/sign-in')
+  // if (!loggedIn) redirect('/sign-in')
 
   return (
     <section className='home'>
@@ -16,7 +16,7 @@ const Home = async () => {
         <HeaderBox 
           type='greeting'
           title='Welcome'
-          user={loggedIn?.name || 'Guest'}
+          user={loggedIn?.firstName || 'Guest'}
           subtext= 'Access and manage your spending and savings'
         />
 
@@ -56,7 +56,7 @@ const Home = async () => {
           </div>
           
         </div>
-        <Transactions />
+        {/* <Transactions /> */}
       </div>
     </section>
   )

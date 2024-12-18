@@ -4,11 +4,11 @@ import { ID, Query, Permission, Role } from "node-appwrite"
 import { createAdminClient, createSessionClient } from "../appwrite"
 import { cookies } from "next/headers"
 import { parseStringify } from "../utils"
+import bcrypt from 'bcryptjs'
 
 const{
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
-  // APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_COLLECTION_ID
 } = process.env
 
 export const getUserInfo = async ({ userId }: getUserInfoProps) => {
@@ -29,33 +29,51 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
 
 export const signIn = async ({ email, password }: signInProps) => {
   try {
-    const { account } = await createAdminClient();
+    const { account, database } = await createAdminClient();
 
-    const session = await account.createEmailPasswordSession(email, password);
-  
-    // Check for existing `appwrite-session` cookie
-    const existingSessionCookie = cookies().get("appwrite-session");
+    const user = await database.listDocuments(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      [Query.equal('email', [email])]
+    )
 
-    if (!existingSessionCookie) {
-      // Set `appwrite-session` cookie if not already set
-      cookies().set("appwrite-session", session.secret, {
-        path: "/",
-        httpOnly: true,
-        sameSite: "strict",
-        secure: true,
-      });
-      console.log("New session cookie set.");
-    } else {
-      console.log("Existing session cookie detected. Not overwriting.");
+    const databasePassword = user.documents[0]["password"]
+    const databaseAuthLevel = user.documents[0]["authLevel"]
+
+    const isMatch = await bcrypt.compare(password, databasePassword)
+
+    if(isMatch && databaseAuthLevel === -1){
+      const session = await account.createEmailPasswordSession(email, databasePassword);
+    
+      // Check for existing `appwrite-session` cookie
+      const existingSessionCookie = cookies().get("appwrite-session");
+
+      if (!existingSessionCookie) {
+        // Set `appwrite-session` cookie if not already set
+        cookies().set("appwrite-session", session.secret, {
+          path: "/",
+          httpOnly: true,
+          sameSite: "strict",
+          secure: true,
+        });
+        console.log("New session cookie set.");
+      } else {
+        console.log("Existing session cookie detected. Not overwriting.");
+      }
+
+      const user = await getUserInfo({ userId: session.userId });
+
+      await create_JWT()
+
+      return parseStringify(user);
+    } else{
+      console.error("Error Logging in")
+      return null
     }
 
-    const user = await getUserInfo({ userId: session.userId });
-
-    await create_JWT()
-
-    return parseStringify(user);
   } catch (error) {
     console.error("Error", error)
+    return null
   }
 }
 
@@ -84,6 +102,7 @@ export const signUp = async ({ confirmPassword, ...userData}: SignUpParams) => {
       {
         ...userData,
         userId: newUserAccount.$id,
+        authLevel: 1,
       },
       [
         Permission.read(Role.user(newUserAccount.$id))

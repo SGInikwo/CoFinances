@@ -29,9 +29,11 @@ import {
 const formSchema = authFormSchema('sign-up')
 
 const currency = [
-  { label: "Euros", value: "0" },
-  { label: "Won", value: "1" },
+  { label: "EUR", value: "0" },
+  { label: "KRW", value: "1" },
   { label: "KES", value: "2" },
+  { label: "GBP", value: "3" },
+  { label: "JPY", value: "4" },
 ] as const
 
 interface CustomInput {
@@ -75,6 +77,7 @@ const CustomMenue = ({ control, setValue, name, label, placeholder }: CustomInpu
                   <Button
                     variant="outline"
                     role="combobox"
+                    aria-expanded={isOpen}
                     className={cn(
                       "w-[200px] justify-between",
                       !field.value && "text-muted-foreground"
@@ -88,8 +91,8 @@ const CustomMenue = ({ control, setValue, name, label, placeholder }: CustomInpu
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0">
-                <Command>
-                  <CommandInput placeholder={placeholder} />
+                <Command loop>
+                  <CommandInput placeholder={placeholder} autoFocus/>
                   <CommandList>
                     <CommandEmpty>No Currency found.</CommandEmpty>
                     <CommandGroup>
@@ -101,7 +104,12 @@ const CustomMenue = ({ control, setValue, name, label, placeholder }: CustomInpu
                             setValue(name, item.value); // Set the correct value
                             setIsOpen(false); // Close the dropdown
                           }}
-                          className="cursor-pointer"
+                          className={cn(
+                            "cursor-pointer bg-white",
+                            "hover:bg-financeSidebar", // Hover state
+                            "aria-selected:bg-financeSidebar", // Keyboard focus (overrides hover)
+                            "hover:bg-white aria-selected:hover:bg-financeSidebar"
+                          )}
                         >
                           {item.label}
                           <Check

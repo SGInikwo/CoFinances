@@ -24,6 +24,7 @@ import { Loader2 } from 'lucide-react'
 import CustomMenue from './CustomMenue'
 import { useRouter } from 'next/navigation'
 import { signIn, signUp } from '@/lib/actions/user.actions'
+import bcrypt from 'bcryptjs'
 
 
 const AuthForm = ({ type }: {type: string}) => {
@@ -49,7 +50,16 @@ const AuthForm = ({ type }: {type: string}) => {
     try {
       // Sign Up
       if(type === 'sign-up') {
-        const newUser = await signUp(data)
+        const hash = await bcrypt.hash(data.password, 12);
+        const int_currency = Number(data.currency)
+        const newUser = await signUp({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          currency: int_currency,
+          email: data.email,
+          password: hash,
+          confirmPassword: data.confirmPassword,
+        })
 
         setuser(newUser)
 

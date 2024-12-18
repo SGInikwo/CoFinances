@@ -1,7 +1,7 @@
 declare type SignUpParams = {
   firstName?: string;
   lastName?: string;
-  currency?: string;
+  currency?: int;
   email: string;
   password: string;
   confirmPassword?: string;

@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios"
 import { create_JWT, getLoggedInUser } from "@/lib/actions/user.actions";
 import { get_cookie, isJWTExpired } from "@/lib/auth";
+import Image from "next/image";
 
 
 
@@ -14,6 +15,13 @@ interface RowData {
 
 const Transactions = () => {
   const [data, setData] = useState<RowData[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const triggerFileInput = () => {
+    // Trigger the hidden file input
+    fileInputRef.current?.click();
+  };
+
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -73,11 +81,30 @@ const Transactions = () => {
 
   return (
     <div>
-      <input 
+      {/* The "image" that acts as a file input */}
+      <Image
+        src="icons/upload.svg" // Replace with your image path
+        alt="Upload File"
+        style={{ cursor: "pointer"}}
+        onClick={triggerFileInput}
+        width={35}
+        height={35}
+      />
+
+      {/* The hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".xlsx, .xls, .csv"
+        onChange={handleFileUpload}
+        style={{ display: "none" }} // Hide the input
+      />
+      
+      {/* <input 
         type="file" 
         accept=".xlsx, .xls, .csv" 
         onChange={handleFileUpload} 
-      />
+      /> */}
 
       {data.length > 0 && (
         <table className="table">

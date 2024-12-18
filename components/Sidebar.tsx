@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 import Footer from './Footer'
+import TransactionsInput from './TransactionsInput'
 
 const Sidebar = ( {user}: SidebarProps ) => {
   const pathName = usePathname();
@@ -52,7 +53,11 @@ const Sidebar = ( {user}: SidebarProps ) => {
           )
         })}
       </nav>
+      <div>
+        <TransactionsInput />
       <Footer user={user} />
+      </div>
+      
     </section>
   )
 }
