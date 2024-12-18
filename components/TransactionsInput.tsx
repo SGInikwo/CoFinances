@@ -46,6 +46,7 @@ import { Label } from '@radix-ui/react-label';
 import { Input } from './ui/input';
 import Link from 'next/link';
 import { Separator } from "@/components/ui/separator"
+import BankManue from './BankManue';
 
 interface RowData {
   [key: string]: string | number | boolean; // Dynamic row structure
@@ -118,125 +119,27 @@ const TransactionsInput = () => {
   }
 
   return (
-    <div className='footer'>
+    <div className='sidebar-link flex cursor-pointer justify-start gap-2 py-6 hover:bg-financeGradient hover:text-white'>
       {/* Upload File */}
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Image
-            src="icons/upload.svg" // Replace with your image path
-            alt="Upload File"
-            style={{ cursor: "pointer" }}
-            width={35}
-            height={35}
-          />
+          <div  className='flex gap-3'>
+            <div className='relative size-6 hover:brightness-0'>
+              <Image
+                src="icons/upload.svg" // Replace with your image path
+                alt="Upload File"
+                style={{ cursor: "pointer" }}
+                fill
+              />
+            </div>
+            <p className='sidebar-label'>
+              Upload
+            </p>
+          </div>
         </DialogTrigger>
-        <DialogContent className="w-[600px] h-[500px] flex justify-center items-center z-50 bg-gray-300"> {/* Ensure z-index is high enough */}
-          <DialogHeader>
-            <DialogDescription className="flex flex-col justify-center items-center w-full">
-              <div className='justify-center items-center '>
-                <Tabs value={selectedValue} onValueChange={setSelectedValue} className="w-[400px] justify-center items-center">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger 
-                      value="upload" 
-                      className={cn('text-gray-500', {
-                        'bg-financeGradient text-white': selectedValue === 'upload', 
-                      })}
 
-                    >
-                      Upload
-                    </TabsTrigger>
-                    <TabsTrigger 
-                      value="banks" 
-                      className={cn('text-gray-500', {
-                        'bg-financeGradient text-white': selectedValue === 'banks', 
-                      })}
-
-                    >
-                      Banks
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="upload">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className='flex justify-center'>
-                          Add your statements here!
-                        </CardTitle>
-                        {/* <CardDescription>
-                          Add your statements here!
-                        </CardDescription> */}
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        <div className="flex justify-center items-center space-y-1">
-                          {/* Button acting as a file input */}
-                          <Button
-                            type="button"
-                            onClick={triggerFileInput}
-                            className='bg-financeGradient text-white'
-                          >
-                            Upload File
-                          </Button>
-
-                          {/* Hidden file input */}
-                          <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept=".xlsx, .xls, .csv"
-                            onChange={handleFileUpload}
-                            style={{ display: "none" }} // Hide the file input
-                          /> 
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                  <TabsContent value="banks">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className='flex justify-center'>
-                          List of Banks
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        <div className="space-y-1">
-                          {bankLinks.map((bank) => {
-                            // const isActive = pathName === item.route || pathName.startsWith(`${item.route}/`);
-                            return (
-                              <Link 
-                                href={bank.bankURL} 
-                                key={bank.label}
-                                target="_blank" // Open in a new tab
-                                rel="noopener noreferrer" // Security for _blank
-                                // className={cn('sidebar-link', {
-                                //   'bg-financeGradient': isActive
-                                // })}
-                                className='sidebar-link'
-                              >
-                                <div className='relative size-6'>
-                                  <Image 
-                                    src={bank.imgURL}  // Update this if you want to include an image for each bank
-                                    alt={bank.label}
-                                    fill
-                                    // className={cn('filter', {
-                                    //   'brightness-0 invert': isActive
-                                    // })}
-                                  />
-                                </div>
-                                {/* <p className={cn("sidebar-label", { "!text-white": isActive })}> */}
-                                <p>
-                                  {bank.label}
-                                  <Separator />
-                                </p>  
-                              </Link>
-                            )
-                          })}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                </Tabs>
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
+        <BankManue setIsOpen={setIsOpen} />
+        
       </Dialog>
     </div>
   );

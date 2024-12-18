@@ -18,6 +18,7 @@ const Footer = ({ user, type = 'desktop' }: FooterProps) => {
           src='icons/logout.svg'
           fill
           alt='logout'
+          className='filter:brightness-0'
         />
       </div>
     </footer>

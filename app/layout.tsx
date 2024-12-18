@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Arvo, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+
 
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
@@ -31,6 +33,7 @@ export default function RootLayout({
       <body
         className={`${ibmPlexSans.variable} ${avro.variable}`}>
         {children}
+        <Toaster />
       </body>
     </html>
   );
