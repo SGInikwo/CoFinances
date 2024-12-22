@@ -1,14 +1,31 @@
 import CurrentBalanceBox from '@/components/CurrentBalanceBox'
 import HeaderBox from '@/components/HeaderBox'
-import Transactions from '@/components/Transactions'
-import { getLoggedInUser } from '@/lib/actions/user.actions'
+import TransactionTable from '@/components/TransactionTable'
+import { create_JWT, get_transactionList, getLoggedInUser } from '@/lib/actions/user.actions'
+import { get_cookie, get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
+import axios from 'axios'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
 const Home = async () => {
   const loggedIn = await getLoggedInUser();
 
-  // if (!loggedIn) redirect('/sign-in')
+  let jwt = await get_jwt(loggedIn["$id"])
+
+  console.log("this is the current jwt", jwt)
+
+  if( await isJWTExpired(jwt)){ 
+    console.log("it is expired!")
+
+    jwt = await create_JWT()
+
+    await send_jwt(jwt)
+    jwt = await get_jwt(loggedIn["$id"])
+
+    console.log("new jwt", jwt)
+  }
+
+  const transactions = await get_transactionList(jwt)
 
   return (
     <section className='home'>
@@ -56,7 +73,7 @@ const Home = async () => {
           </div>
           
         </div>
-        {/* <Transactions /> */}
+        <TransactionTable transactions={transactions}/>
       </div>
     </section>
   )

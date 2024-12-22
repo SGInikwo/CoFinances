@@ -75,17 +75,11 @@ const AuthForm = ({ type }: {type: string}) => {
         if(response) router.push('/')
 
       }
-
-      
-      
     } catch (error) {
       console.log(error)
     } finally {
       setIsLoading(false)
     }
-    
-    
-    
   }
 
   return (

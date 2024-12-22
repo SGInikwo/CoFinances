@@ -5,6 +5,8 @@ import { createAdminClient, createSessionClient } from "../appwrite"
 import { cookies } from "next/headers"
 import { parseStringify } from "../utils"
 import bcrypt from 'bcryptjs'
+import { delete_jwt, get_cookie, initiate_jwt, isJWTExpired, send_jwt } from "../auth"
+import axios from "axios"
 
 const{
   APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -63,7 +65,9 @@ export const signIn = async ({ email, password }: signInProps) => {
 
       const user = await getUserInfo({ userId: session.userId });
 
-      await create_JWT()
+      const jwt = await create_JWT()
+
+      await initiate_jwt(jwt)
 
       return parseStringify(user);
     } else{
@@ -142,6 +146,9 @@ export async function getLoggedInUser() {
 
 export const logoutAccount = async () => {
   try {
+    const user = await getLoggedInUser();
+    await delete_jwt(user["$id"]);
+
     const { account } = await createSessionClient();
 
     await account.deleteSession('current')
@@ -154,7 +161,6 @@ export const logoutAccount = async () => {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function create_JWT(account?: any) {
   try {
     if (!account) {
@@ -165,18 +171,32 @@ export async function create_JWT(account?: any) {
     const jwtResponse = await account.createJWT();
     const jwt = jwtResponse.jwt;
 
-    cookies().set("jwt", jwt, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-    });
-
     console.log("JWT created and stored in cookie:", jwt);
 
     return jwt;
 
   } catch (error) {
     console.error("Error", error);
+  }
+}
+
+
+export async function get_transactionList(jwt) {
+  try {
+
+    const get_transactions = await axios.get("http://localhost:8000/api/transactions/list/",{
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session cookies are sent
+    })
+
+    console.log("Server Response:", get_transactions.data);
+
+    return get_transactions.data
+
+  } catch (error) {
+    console.error("Error", error);
+    return null
   }
 }

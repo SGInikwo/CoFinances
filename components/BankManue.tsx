@@ -1,14 +1,12 @@
-import { bankLinks, sidebarLinks } from '@/constants';
+import { bankLinks } from '@/constants';
 import Link from 'next/link';
 import React, { useRef, useState } from 'react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils';
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import axios from "axios"
 import {
@@ -20,18 +18,18 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from './ui/button'
 import * as XLSX from "xlsx";
 import { create_JWT, getLoggedInUser } from '@/lib/actions/user.actions';
-import { get_cookie, isJWTExpired } from '@/lib/auth';
+import { get_cookie, get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
 import { Separator } from './ui/separator';
-import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import router from 'next/router';
 
 interface RowData {
   [key: string]: string | number | boolean; // Dynamic row structure
@@ -43,9 +41,9 @@ interface BankManueProps {
 
 const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
   const { toast } = useToast()
-  const router = useRouter();
   const [data, setData] = useState<RowData[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   // const [isOpen, setIsOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = useState<string>('upload'); 
@@ -57,6 +55,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
+      setIsLoading(true);
       const file = e.target.files[0];
       const reader = new FileReader();
 
@@ -69,7 +68,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
         const parsedData: RowData[] = XLSX.utils.sheet_to_json<RowData>(sheet); // Convert the sheet to JSON
         console.log(parsedData);
         setData(parsedData);
-        
+
         // Send parsed data to the FastAPI backend
         try {
           const user = await getLoggedInUser();
@@ -79,12 +78,16 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
 
           console.log("Logged-in User:", user); // Debugging
 
-          let jwt = await get_cookie()
+          let jwt = await get_jwt(user["$id"])
 
           if( await isJWTExpired(jwt)){
             console.log("JWT is expired, generating a new one...");
-            await create_JWT()
-            jwt = await get_cookie()
+            // await create_JWT()
+            // jwt = await get_cookie()
+            jwt = await create_JWT()
+            
+            await send_jwt(jwt)
+            jwt = await get_jwt(user["$id"])
             console.log("New JWT", jwt);
           }else{
             console.log("JWT is valid", jwt);
@@ -102,17 +105,22 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
           console.log("Server Response:", response.data);
           setIsOpen(false);
           toast({
+            duration:1000,
             variant: "succes",
             title: "Data is send!",
             description: "Your data is being saved.",
           });
+          setIsLoading(false);
+          window.location.reload(); 
         } catch (error) {
           console.error("Error sending data to server:", error);
           toast({
+            duration:1000,
             variant: "destructive",
             title: "Uh oh! Something went wrong.",
             description: "There was a problem with your request.",
           });
+          setIsLoading(false);
         }
       };
 
@@ -132,7 +140,6 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
                     className={cn('text-gray-500', {
                       'bg-financeGradient text-white': selectedValue === 'upload', 
                     })}
-
                   >
                     Upload
                   </TabsTrigger>
@@ -141,7 +148,6 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
                     className={cn('text-gray-500', {
                       'bg-financeGradient text-white': selectedValue === 'banks', 
                     })}
-
                   >
                     Banks
                   </TabsTrigger>
@@ -161,10 +167,17 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
                         {/* Button acting as a file input */}
                         <Button
                           type="button"
+                          disabled={isLoading}
                           onClick={triggerFileInput}
                           className='bg-financeGradient text-white'
                         >
-                          Upload File
+                          {isLoading ? (
+                            <>
+                              <Loader2 size={20} className='animate-spin'/> &nbsp;
+                              Loading...
+                            </>
+                          ) : 'Upload File'}
+                          
                         </Button>
 
                         {/* Hidden file input */}

@@ -16,10 +16,14 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import Footer from "./Footer"
 import TransactionsInput from "./TransactionsInput"
+import { Dialog, DialogTrigger } from "./ui/dialog"
+import BankManue from "./BankManue"
+import React from "react"
 
 
 
 const MobileNav = ({ user }: MobileNavProps) => {
+  const [isOpen, setIsOpen] = React.useState(false);
   const pathName = usePathname()
   return (
     <section className='w-full max-w-[264px]'>
@@ -78,8 +82,30 @@ const MobileNav = ({ user }: MobileNavProps) => {
             </SheetClose>
 
             <div>
-              <TransactionsInput />
-              <Footer user={user} />
+              <div className='mobileNav-sheet_close hover:bg-financeGradient hover:text-white hover:cursor-pointer'>
+                {/* Upload File */}
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger asChild>
+                    <div  className='flex gap-3 w-full h-full'>
+                      <div className='relative size-6'>
+                        <Image
+                          src="icons/upload.svg" // Replace with your image path
+                          alt="Upload File"
+                          style={{ cursor: "pointer" }}
+                          fill
+                        />
+                      </div>
+                      <p className='text-16 font-semibold text-black'>
+                        Upload
+                      </p>
+                    </div>
+                  </DialogTrigger>
+
+                  <BankManue setIsOpen={setIsOpen} />
+                  
+                </Dialog>
+              </div>
+              <Footer user={user} type='mobile' />
             </div>
                   
           </div>

@@ -46,7 +46,7 @@ const Sidebar = ( {user}: SidebarProps ) => {
                   })}
                 />
               </div>
-              <p className={cn("sidebar-label", { "!text-white": isActive })}>
+              <p className={cn("sidebar-label w-full h-full", { "!text-white": isActive }, {'hover:text-financeGradient': !isActive})}>
                 {item.label}
               </p>  
             </Link>
@@ -55,7 +55,7 @@ const Sidebar = ( {user}: SidebarProps ) => {
       </nav>
       <div>
         <TransactionsInput />
-      <Footer user={user} />
+        <Footer user={user} />
       </div>
       
     </section>

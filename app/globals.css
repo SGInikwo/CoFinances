@@ -175,11 +175,11 @@
 
   /* Footer */
   .footer {
-    @apply flex cursor-pointer justify-end gap-2 py-6;
+    @apply flex cursor-pointer justify-start gap-2 py-6;
   }
 
   .footer_name {
-    @apply flex size-10  justify-center rounded-full bg-gray-200 max-xl:hidden;
+    @apply flex size-10  justify-center items-center rounded-full bg-gray-200 max-xl:hidden;
   }
 
   .footer_email {
@@ -187,7 +187,7 @@
   }
 
   .footer_name-mobile {
-    @apply flex size-10  justify-end rounded-full bg-gray-200;
+    @apply flex text-sm size-8  justify-center rounded-full bg-gray-200;
   }
 
   .footer_email-mobile {
@@ -195,6 +195,14 @@
   }
 
   .footer_image {
-    @apply relative size-5 max-xl:w-full max-xl:flex max-xl:justify-end max-xl:items-end;
+    @apply relative size-6 justify-end max-xl:w-full max-xl:flex max-xl:justify-end max-xl:items-end;
+  }
+
+  .footer_full_name {
+    @apply text-14 truncate text-gray-700 font-semibold;
+  }
+
+  .footer_full_name_mobile {
+    @apply text-14 truncate text-gray-700 font-semibold;
   }
 }

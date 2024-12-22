@@ -12,7 +12,18 @@ const Footer = ({ user, type = 'desktop' }: FooterProps) => {
   }
 
   return (
-    <footer className='footer'>
+    <footer className='footer items-center'>
+      <div className={type === 'mobile' ? 'footer_name-mobile' : 'footer_name'}>
+        <p className='flex flex-row text-xl font-bold text-gray-700 max-sm:text-sm max-sm:justify-start max-sm:items-center'>
+          {user.firstName[0]}
+        </p>
+      </div>
+      <div className={type === 'mobile' ? 'footer_email-mobile' : 'footer_email'}>
+          <h1 className="text-14 truncate text-gray-700 font-semibold">
+            {user?.firstName} {user?.lastName}
+          </h1>
+      </div>
+
       <div className='footer_image' onClick={handleLogOut}>
         <Image
           src='icons/logout.svg'

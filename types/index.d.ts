@@ -57,3 +57,27 @@ declare interface FooterProps {
 declare interface getUserInfoProps {
   userId: string;
 }
+
+declare interface Transaction{
+  id: string;
+  userId: string;
+  date: string;
+  recipient: string;
+  currency: int
+  amount: string;
+  transactionType: string;
+  transactionDetails: string;
+  icon: int;
+  userCurrency: int;
+  balance: string;
+  // $id: string;
+  // $createdAt: string;
+  // $updatedAt: string;
+  // $databaseId: string;
+  // $collectionId: string;
+}
+  
+
+declare interface TransactionTableProps {
+  transactions: Transaction[];
+}
