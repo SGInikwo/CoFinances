@@ -1,6 +1,7 @@
 import CurrentBalanceBox from '@/components/CurrentBalanceBox'
 import HeaderBox from '@/components/HeaderBox'
 import TransactionTable from '@/components/TransactionTable'
+import { convert_currency } from '@/lib/actions/currency.actions'
 import { create_JWT, get_transactionList, getLoggedInUser } from '@/lib/actions/user.actions'
 import { get_cookie, get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
 import axios from 'axios'
@@ -27,6 +28,9 @@ const Home = async () => {
 
   const transactions = await get_transactionList(jwt)
 
+  // const cc = await convert_currency(0,1)
+  // console.log(cc)
+  
   return (
     <section className='home'>
       <div className='home-content'>

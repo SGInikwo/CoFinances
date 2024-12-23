@@ -113,15 +113,6 @@ export const signUp = async ({ confirmPassword, ...userData}: SignUpParams) => {
       ]
     );
 
-    // const session = await account.createEmailPasswordSession(email, password);
-  
-    // cookies().set("appwrite-session", session.secret, {
-    //   path: "/",
-    //   httpOnly: true,
-    //   sameSite: "strict",
-    //   secure: true,
-    // });
-
     await create_JWT()
 
     return parseStringify(newUser);
@@ -184,7 +175,7 @@ export async function create_JWT(account?: any) {
 export async function get_transactionList(jwt) {
   try {
 
-    const get_transactions = await axios.get("http://localhost:8000/api/transactions/list/",{
+    const get_transactions = await axios.get("http://localhost:8000/api/transactions/list",{
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
       },

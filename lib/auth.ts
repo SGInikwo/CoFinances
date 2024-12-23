@@ -30,7 +30,7 @@ export async function get_cookie(){
 }
 
 export async function initiate_jwt(jwt) {
-  const response = await axios.post("http://localhost:8000/api/usertoken/",
+  const response = await axios.post("http://localhost:8000/api/usertoken",
     null,
     {
       headers: {
@@ -64,14 +64,14 @@ export async function send_jwt(jwt) {
 }
 
 export async function get_jwt(userId){
-  const get_jwt = await axios.get(`http://localhost:8000/api/usertoken/${userId}/`,
+  const get_jwt = await axios.get(`http://localhost:8000/api/usertoken/${userId}`,
   );
   
   return get_jwt.data
 }
 
 export async function delete_jwt(userId){
-  const get_jwt = await axios.delete(`http://localhost:8000/api/usertoken/${userId}/`,
+  const get_jwt = await axios.delete(`http://localhost:8000/api/usertoken/${userId}`,
   );
   
 }

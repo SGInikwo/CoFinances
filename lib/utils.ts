@@ -7,16 +7,17 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // Currency Format Euro (nl-NL, EUR) and Won (ko-KR, KRW)
-export function formatAmount(amount: number, currency: string = 'EUR'): string {
-  const locale = currency==='EUR' ? 'nl-NL' : 'ko-KR';
+export function formatAmount(amount: number, user_currency: number = 0): string {
+  const currency = user_currency === 0 ? 'EUR' : user_currency === 1 ? 'KRW' : user_currency === 2 ? 'KES' : user_currency === 3 ? 'GBP' : 'USD';
+  // const locale = user_currency === 0 ? 'nl-NL' : user_currency === 1 ? 'ko-KR' : user_currency === 2 ? 'ke-KE' : user_currency === 3 ? 'uk-UK' : 'us-US';
   
-  return new Intl.NumberFormat(locale, {
+  return new Intl.NumberFormat('nl-NL', {
     style: 'currency',
     currency: currency,
     minimumFractionDigits:2,
   }).format(amount);
 }
-
+      
 export const parseStringify = (value: any) => JSON.parse(JSON.stringify(value));
 
 export const authFormSchema = (type: string) => z.object({

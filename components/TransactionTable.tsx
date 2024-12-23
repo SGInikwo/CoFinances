@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Table,
   TableBody,
@@ -7,9 +9,46 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { convert_currency } from "@/lib/actions/currency.actions";
+import { formatAmount } from "@/lib/utils"
+import { useEffect, useState } from "react";
+import { number } from "zod"
+
+interface Transaction {
+  id: string;
+  recipient: string;
+  amount: number;
+  currency: string;
+  userCurrency: string;
+  transactionType: string;
+  icon: string;
+  date: string;
+}
+
+interface TransactionTableProps {
+  transactions: Transaction[];
+}
 
 const TransactionTable = ( {transactions}: TransactionTableProps ) => {
+  const [convertedTransactions, setConvertedTransactions] = useState<
+    (Transaction & { convertedAmount: string })[]
+  >([]);
 
+  useEffect(() => {
+    const fetchConvertedTransactions = async () => {
+      const updatedTransactions = await Promise.all(
+        transactions.map(async (t) => {
+          const rate = await convert_currency(t.currency, t.userCurrency);
+          const convertedAmount = formatAmount(Number(t.amount) * rate);
+          return { ...t, convertedAmount };
+        })
+      );
+      setConvertedTransactions(updatedTransactions);
+    };
+
+    fetchConvertedTransactions();
+  }, [transactions]);
+  
   return (
     <Table>
       <TableHeader>
@@ -22,7 +61,7 @@ const TransactionTable = ( {transactions}: TransactionTableProps ) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {transactions.map((t: Transaction) => {
+        {convertedTransactions.map((t) => {
           return(
             <TableRow key={t.id}>
             <TableCell>
@@ -34,7 +73,7 @@ const TransactionTable = ( {transactions}: TransactionTableProps ) => {
             </TableCell>
 
             <TableCell>
-              {t.amount}
+              {t.convertedAmount}
             </TableCell>
 
             <TableCell>

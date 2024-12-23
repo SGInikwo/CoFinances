@@ -28,8 +28,6 @@ import { get_cookie, get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
 import { Separator } from './ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { redirect } from 'next/navigation';
-import router from 'next/router';
 
 interface RowData {
   [key: string]: string | number | boolean; // Dynamic row structure
