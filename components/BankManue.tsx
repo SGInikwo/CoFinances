@@ -28,6 +28,7 @@ import { get_cookie, get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
 import { Separator } from './ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { push_data } from '@/lib/actions/transaction.actions';
 
 interface RowData {
   [key: string]: string | number | boolean; // Dynamic row structure
@@ -64,7 +65,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const parsedData: RowData[] = XLSX.utils.sheet_to_json<RowData>(sheet); // Convert the sheet to JSON
-        console.log(parsedData);
+        // console.log(parsedData);
         setData(parsedData);
 
         // Send parsed data to the FastAPI backend
@@ -74,21 +75,21 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
               throw new Error("No active session found for the user.");
           }
 
-          console.log("Logged-in User:", user); // Debugging
+          // console.log("Logged-in User:", user); // Debugging
 
           let jwt = await get_jwt(user["$id"])
 
           if( await isJWTExpired(jwt)){
-            console.log("JWT is expired, generating a new one...");
+            // console.log("JWT is expired, generating a new one...");
             // await create_JWT()
             // jwt = await get_cookie()
             jwt = await create_JWT()
             
             await send_jwt(jwt)
             jwt = await get_jwt(user["$id"])
-            console.log("New JWT", jwt);
+            // console.log("New JWT", jwt);
           }else{
-            console.log("JWT is valid", jwt);
+            // console.log("JWT is valid", jwt);
           }
 
           const response = await axios.post("http://localhost:8000/api/transactions/", 
@@ -100,7 +101,9 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
               withCredentials: true, // Ensures session cookies are sent
             }
           );
-          console.log("Server Response:", response.data);
+          // console.log("Server Response:", response.data);
+          await push_data(jwt)
+          
           setIsOpen(false);
           toast({
             duration:1000,

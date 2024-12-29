@@ -33,7 +33,7 @@ const currency = [
   { label: "KRW", value: "1" },
   { label: "KES", value: "2" },
   { label: "GBP", value: "3" },
-  { label: "JPY", value: "4" },
+  { label: "USD", value: "4" },
 ] as const
 
 interface CustomInput {

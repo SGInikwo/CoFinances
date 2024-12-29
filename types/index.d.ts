@@ -31,6 +31,8 @@ declare interface HeaderBoxProps {
   title: string;
   subtext: string;
   user?: string;
+  userInfo: string;
+  currency: string;
 }
 
 declare interface CurrentBalanceBoxProps {
@@ -39,6 +41,7 @@ declare interface CurrentBalanceBoxProps {
   totalCurrentBalance: number;
   totalPreviousBalance: number;
   totalTransactions: number;
+  user_currency: number;
 }
 
 declare interface SidebarProps {

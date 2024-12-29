@@ -1,7 +1,9 @@
 import Image from 'next/image'
 import AnimatedCounter from './AnimatedCounter'
 
-const CurrentBalanceBox = ({ type, image_name, totalCurrentBalance, totalPreviousBalance, totalTransactions}: CurrentBalanceBoxProps) => {
+const CurrentBalanceBox = ({ type, image_name, totalCurrentBalance, totalPreviousBalance, totalTransactions, user_currency}: CurrentBalanceBoxProps) => {
+  const currency = user_currency === 0 ? '€' : user_currency === 1 ? '₩' : user_currency === 2 ? 'KES' : user_currency === 3 ? '£' : '$';
+
   return (
     <section className='current-balance'>
       <div className='current-balance-chart gap-1 items-center max-tablet:hidden max-md:flex'>
@@ -21,7 +23,7 @@ const CurrentBalanceBox = ({ type, image_name, totalCurrentBalance, totalPreviou
 
           <div className='current-balance-amount flex items-center'>
             <div className='current-balance-label w-38'>
-              <AnimatedCounter amount={totalCurrentBalance} currency='€'/>
+              <AnimatedCounter amount={totalCurrentBalance} currency={currency}/>
             </div>
             
             <div className='font-normal text-10 items-center p-3'>
@@ -30,7 +32,7 @@ const CurrentBalanceBox = ({ type, image_name, totalCurrentBalance, totalPreviou
           </div>
 
           <div className='flex gap-1 text-10 w-33'>
-            <AnimatedCounter amount={totalPreviousBalance} currency='+ €'/>
+            <AnimatedCounter amount={totalPreviousBalance} currency={`+ ${currency}`}/>
 
             <div className=''>
               from last month

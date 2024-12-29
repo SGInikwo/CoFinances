@@ -29,6 +29,35 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
   }
 }
 
+export const updateuserCurrency = async ({ newCurrency }: { newCurrency: string }) => {
+  const { account, database } = await createAdminClient();
+  const user = await getLoggedInUser();
+
+  // Convert to a number if needed (or you can keep it as a string if that’s the format)
+  const newCurrencyNumber = Number(newCurrency);
+
+  // Fetch the current user document
+  const currentUser = await database.getDocument(DATABASE_ID!, USER_COLLECTION_ID!, user.$id);
+
+  // Remove internal fields like $databaseId
+  const { $databaseId, $collectionId, ...userData } = currentUser;
+
+  // console.log("Updating currency to: ", newCurrencyNumber);
+
+  // Update the user document with the new currency value
+  const updatedUser = await database.updateDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    user.$id,
+    {
+      ...userData,
+      currency: newCurrencyNumber // Update currency field
+    },
+  );
+
+  return parseStringify(updatedUser); // Returning the updated document
+}
+
 export const signIn = async ({ email, password }: signInProps) => {
   try {
     const { account, database } = await createAdminClient();
@@ -58,9 +87,9 @@ export const signIn = async ({ email, password }: signInProps) => {
           sameSite: "strict",
           secure: true,
         });
-        console.log("New session cookie set.");
+        // console.log("New session cookie set.");
       } else {
-        console.log("Existing session cookie detected. Not overwriting.");
+        // console.log("Existing session cookie detected. Not overwriting.");
       }
 
       const user = await getUserInfo({ userId: session.userId });
@@ -162,7 +191,7 @@ export async function create_JWT(account?: any) {
     const jwtResponse = await account.createJWT();
     const jwt = jwtResponse.jwt;
 
-    console.log("JWT created and stored in cookie:", jwt);
+    // console.log("JWT created and stored in cookie:", jwt);
 
     return jwt;
 
@@ -182,7 +211,7 @@ export async function get_transactionList(jwt) {
       withCredentials: true, // Ensures session cookies are sent
     })
 
-    console.log("Server Response:", get_transactions.data);
+    // console.log("Server Response:", get_transactions.data);
 
     return get_transactions.data
 

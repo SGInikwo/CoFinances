@@ -1,11 +1,10 @@
 import CurrentBalanceBox from '@/components/CurrentBalanceBox'
 import HeaderBox from '@/components/HeaderBox'
 import TransactionTable from '@/components/TransactionTable'
-import { convert_currency } from '@/lib/actions/currency.actions'
+import Calendar from '@/components/Calender'
+import { get_summary } from '@/lib/actions/transaction.actions'
 import { create_JWT, get_transactionList, getLoggedInUser } from '@/lib/actions/user.actions'
-import { get_cookie, get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
-import axios from 'axios'
-import { redirect } from 'next/navigation'
+import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
 import React from 'react'
 
 const Home = async () => {
@@ -13,24 +12,20 @@ const Home = async () => {
 
   let jwt = await get_jwt(loggedIn["$id"])
 
-  console.log("this is the current jwt", jwt)
-
   if( await isJWTExpired(jwt)){ 
-    console.log("it is expired!")
 
     jwt = await create_JWT()
 
     await send_jwt(jwt)
     jwt = await get_jwt(loggedIn["$id"])
 
-    console.log("new jwt", jwt)
   }
 
   const transactions = await get_transactionList(jwt)
 
-  // const cc = await convert_currency(0,1)
-  // console.log(cc)
-  
+  const transactionSummary = await get_summary(jwt)
+  // console.log(transactionSummary["monthlyBalance"])
+
   return (
     <section className='home'>
       <div className='home-content'>
@@ -38,32 +33,37 @@ const Home = async () => {
           type='greeting'
           title='Welcome'
           user={loggedIn?.firstName || 'Guest'}
+          userInfo={loggedIn.$id}
           subtext= 'Access and manage your spending and savings'
+          currency={String(loggedIn.currency)}
         />
 
         <div className='flex gap-1 w-full max-md:flex-col'>
           <CurrentBalanceBox
             type = 'Balance'
             image_name = 'icons/money_balance.svg'
-            totalCurrentBalance={435.60}
+            totalCurrentBalance={Number(transactionSummary["monthlyBalance"])}
             totalPreviousBalance = {520.54}
             totalTransactions = {30}
+            user_currency = {loggedIn.currency}
           />
 
           <CurrentBalanceBox
             type = 'Expense'
             image_name = 'icons/expens.svg'
-            totalCurrentBalance={220.60}
+            totalCurrentBalance={Number(transactionSummary["monthlyExpenses"])}
             totalPreviousBalance = {100.54}
             totalTransactions = {30}
+            user_currency = {loggedIn.currency}
           />
 
           <CurrentBalanceBox
             type = 'Savings'
             image_name = 'icons/bank.svg'
-            totalCurrentBalance={100050.00}
+            totalCurrentBalance={Number(transactionSummary["monthlySavings"])}
             totalPreviousBalance = {500.20}
             totalTransactions = {1}
+            user_currency = {loggedIn.currency}
           />
 
           <div className='hidden'>
@@ -73,12 +73,18 @@ const Home = async () => {
               totalCurrentBalance={100050.00}
               totalPreviousBalance = {500.20}
               totalTransactions = {1}
+              user_currency = {loggedIn.currency}
             />
           </div>
           
         </div>
-        <TransactionTable transactions={transactions}/>
+        <div>
+          <TransactionTable transactions={transactions} currency={loggedIn.currency}/>
+        </div>
+        <Calendar />
       </div>
+      
+      
     </section>
   )
 }
