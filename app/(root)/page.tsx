@@ -12,19 +12,26 @@ const Home = async () => {
 
   let jwt = await get_jwt(loggedIn["$id"])
 
-  if( await isJWTExpired(jwt)){ 
-
+  if (await isJWTExpired(jwt)) {
     jwt = await create_JWT()
-
     await send_jwt(jwt)
     jwt = await get_jwt(loggedIn["$id"])
-
   }
 
   const transactions = await get_transactionList(jwt)
 
-  const transactionSummary = await get_summary(jwt)
-  // console.log(transactionSummary["monthlyBalance"])
+  let transactionSummary; // Declare the variable outside the try-catch block
+
+  try {
+    transactionSummary = await get_summary(jwt); // Assign value in try block
+  } catch (error) {
+    transactionSummary = null; // Handle error in catch block
+  }
+
+  // Safely access properties of transactionSummary using optional chaining or fallback values
+  const monthlyBalance = transactionSummary ? Number(transactionSummary["monthlyBalance"]) : 0;
+  const monthlyExpenses = transactionSummary ? Number(transactionSummary["monthlyExpenses"]) : 0;
+  const monthlySavings = transactionSummary ? Number(transactionSummary["monthlySavings"]) : 0;
 
   return (
     <section className='home'>
@@ -34,46 +41,46 @@ const Home = async () => {
           title='Welcome'
           user={loggedIn?.firstName || 'Guest'}
           userInfo={loggedIn.$id}
-          subtext= 'Access and manage your spending and savings'
+          subtext='Access and manage your spending and savings'
           currency={String(loggedIn.currency)}
         />
 
         <div className='flex gap-1 w-full max-md:flex-col'>
           <CurrentBalanceBox
-            type = 'Balance'
-            image_name = 'icons/money_balance.svg'
-            totalCurrentBalance={Number(transactionSummary["monthlyBalance"])}
-            totalPreviousBalance = {520.54}
-            totalTransactions = {30}
-            user_currency = {loggedIn.currency}
+            type='Balance'
+            image_name='icons/money_balance.svg'
+            totalCurrentBalance={monthlyBalance}
+            totalPreviousBalance={520.54}
+            totalTransactions={30}
+            user_currency={loggedIn.currency}
           />
 
           <CurrentBalanceBox
-            type = 'Expense'
-            image_name = 'icons/expens.svg'
-            totalCurrentBalance={Number(transactionSummary["monthlyExpenses"])}
-            totalPreviousBalance = {100.54}
-            totalTransactions = {30}
-            user_currency = {loggedIn.currency}
+            type='Expense'
+            image_name='icons/expens.svg'
+            totalCurrentBalance={monthlyExpenses}
+            totalPreviousBalance={100.54}
+            totalTransactions={30}
+            user_currency={loggedIn.currency}
           />
 
           <CurrentBalanceBox
-            type = 'Savings'
-            image_name = 'icons/bank.svg'
-            totalCurrentBalance={Number(transactionSummary["monthlySavings"])}
-            totalPreviousBalance = {500.20}
-            totalTransactions = {1}
-            user_currency = {loggedIn.currency}
+            type='Savings'
+            image_name='icons/bank.svg'
+            totalCurrentBalance={monthlySavings}
+            totalPreviousBalance={500.20}
+            totalTransactions={1}
+            user_currency={loggedIn.currency}
           />
 
           <div className='hidden'>
             <CurrentBalanceBox
-              type = 'Savings'
-              image_name = 'icons/invest.svg'
+              type='Savings'
+              image_name='icons/invest.svg'
               totalCurrentBalance={100050.00}
-              totalPreviousBalance = {500.20}
-              totalTransactions = {1}
-              user_currency = {loggedIn.currency}
+              totalPreviousBalance={500.20}
+              totalTransactions={1}
+              user_currency={loggedIn.currency}
             />
           </div>
           
@@ -83,8 +90,6 @@ const Home = async () => {
         </div>
         <Calendar />
       </div>
-      
-      
     </section>
   )
 }
