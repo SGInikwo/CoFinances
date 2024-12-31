@@ -10,30 +10,23 @@ import React from 'react'
 const Home = async () => {
   const loggedIn = await getLoggedInUser();
 
-  let jwt = await get_jwt(loggedIn["$id"])
+  let jwt = await get_jwt(loggedIn?.$id)
 
   if (await isJWTExpired(jwt)) {
     jwt = await create_JWT()
     await send_jwt(jwt)
-    jwt = await get_jwt(loggedIn["$id"])
+    jwt = await get_jwt(loggedIn?.$id)
   }
 
-  const transactions = await get_transactionList(jwt)
+  const [transactions, summaries, transactionSummary] = await Promise.all([
+    get_transactionList(jwt),
+    get_all_summary(jwt),
+    get_summary(jwt).catch(() => null), // Safely handle potential error
+  ]);
 
-  const summaries = await get_all_summary(jwt)
-
-  let transactionSummary; // Declare the variable outside the try-catch block
-
-  try {
-    transactionSummary = await get_summary(jwt); // Assign value in try block
-  } catch (error) {
-    transactionSummary = null; // Handle error in catch block
-  }
-
-  // Safely access properties of transactionSummary using optional chaining or fallback values
-  const monthlyBalance = transactionSummary ? Number(transactionSummary["monthlyBalance"]) : 0;
-  const monthlyExpenses = transactionSummary ? Number(transactionSummary["monthlyExpenses"]) : 0;
-  const monthlySavings = transactionSummary ? Number(transactionSummary["monthlySavings"]) : 0;
+  const monthlyBalance = transactionSummary?.monthlyBalance ? Number(transactionSummary.monthlyBalance) : 0;
+  const monthlyExpenses = transactionSummary?.monthlyExpenses ? Number(transactionSummary.monthlyExpenses) : 0;
+  const monthlySavings = transactionSummary?.monthlySavings ? Number(transactionSummary.monthlySavings) : 0;
 
   return (
     <section className='home'>
