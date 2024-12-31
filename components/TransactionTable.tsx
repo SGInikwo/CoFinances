@@ -26,7 +26,7 @@ interface Transaction {
 
 interface TransactionTableProps {
   transactions: Transaction[];
-  currency: Number;
+  currency: number;
 }
 
 const TransactionTable = ( {transactions, currency}: TransactionTableProps ) => {
