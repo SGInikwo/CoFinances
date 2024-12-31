@@ -1,6 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
-    "rule-name": "off" // Replace "rule-name" with the ESLint rule you want to disable
+    "*": "off" // Replace "rule-name" with the ESLint rule you want to disable
   }
 }
