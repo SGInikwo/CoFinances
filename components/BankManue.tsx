@@ -65,7 +65,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const parsedData: RowData[] = XLSX.utils.sheet_to_json<RowData>(sheet); // Convert the sheet to JSON
-        // console.log(parsedData);
+
         setData(parsedData);
 
         // Send parsed data to the FastAPI backend
@@ -75,21 +75,16 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
               throw new Error("No active session found for the user.");
           }
 
-          // console.log("Logged-in User:", user); // Debugging
-
           let jwt = await get_jwt(user["$id"])
 
           if( await isJWTExpired(jwt)){
-            // console.log("JWT is expired, generating a new one...");
-            // await create_JWT()
-            // jwt = await get_cookie()
+ 
             jwt = await create_JWT()
             
             await send_jwt(jwt)
             jwt = await get_jwt(user["$id"])
-            // console.log("New JWT", jwt);
           }else{
-            // console.log("JWT is valid", jwt);
+
           }
 
           const response = await axios.post("http://localhost:8000/api/transactions/", 

@@ -38,8 +38,6 @@ const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency}: He
     try {
       await updateuserCurrency({ newCurrency: selectedCurrency })
 
-      // console.log(userInfo)
-
       let jwt = await get_jwt(userInfo)
       if( await isJWTExpired(jwt)){
 

@@ -5,25 +5,14 @@ import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "January", "February", "March", "April", "May", "June", "July", "August",
+  "September", "October", "November", "December",
 ];
 
-const Calendar = () => {
+const Calendar = ({ summaries, currency }) => {
   const [today, setToday] = useState(new Date());
   const [activeDay, setActiveDay] = useState<number | null>(null);
-  // const [currentMonth, setActiveDay] = useState(null);
-  const currentMonth = today.getMonth()
+  const currentMonth = today.getMonth();
   const [month, setMonth] = useState(today.getMonth());
   const [year, setYear] = useState(today.getFullYear());
 
@@ -56,9 +45,45 @@ const Calendar = () => {
     setActiveDay(today.getDate());
   }, [today]);
 
+  // Filter summaries for the current month and year
+  const filteredSummaries = summaries.filter((summary) => {
+    const summaryDate = new Date(summary.date);
+    return summaryDate.getMonth() === month && summaryDate.getFullYear() === year;
+  });
+
+  // Summing up the amounts for each day
+  const summedAmounts = filteredSummaries.reduce((acc, summary) => {
+    const { day, amount } = summary;
+    const amountValue = parseFloat(amount);
+    
+    // Accumulate the amount for each day
+    if (!acc[day]) {
+      acc[day] = 0;
+    }
+
+    acc[day] += amountValue;
+
+    return acc;
+  }, {});
+
+  const formatAmount = (amount) => {
+    if (currency === 1) {
+      // Format with thousands separator for currency 1
+      return Math.abs(amount)
+        .toFixed(0) // Remove decimals if no fractional value is needed
+        .replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Add period as thousand separator
+    }
+
+    // For other currencies, format with two decimals and replace the dot with a comma
+    return Math.abs(amount)
+      .toFixed(2) // Ensure two decimals
+      .replace('.', ',') // Replace dot with comma
+      .replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Add period as thousand separator
+  };
+
   return (
-    <div className="flex">
-      <div className="bg-white rounded-lg shadow-md h-[365px]">
+    <div className="flex-col">
+      <div className="bg-white rounded-lg shadow-md">
         {/* Month Navigation */}
         <div className="flex justify-between items-center bg-gray-600 text-white px-4 py-2 rounded-t-lg">
           <Button
@@ -92,14 +117,13 @@ const Calendar = () => {
         </div>
 
         {/* Days */}
-        <div className="grid grid-cols-7 gap-1 p-2 w-[330px] h-[180px]">
+        <div className="grid grid-cols-7 gap-1 p-2">
           {/* Previous Month Days */}
           {Array.from({ length: firstWeekDay }).map((_, i) => (
-            <div key={`prev-${i}`} className="text-gray-400 px-1 border">
-              <p className="text-end text-[12px]">
+            <div key={`prev-${i}`} className="text-gray-400 px-1">
+              <p className="text-center text-[12px]">
                 {prevDays - firstWeekDay + i + 1}
               </p>
-              
             </div>
           ))}
 
@@ -110,36 +134,51 @@ const Calendar = () => {
               today.getDate() === day &&
               today.getMonth() === month &&
               today.getFullYear() === year;
+            const summedAmount = summedAmounts[day] || 0; // Get the summed amount for the day
+
+            // Determine if the amount is positive or negative
+            const isPositive = summedAmount >= 0;
+
+            // Get the formatted amount
+            const displayAmount = formatAmount(summedAmount);
 
             return (
               <div
                 key={`current-${i}`}
                 onClick={() => handleDayClick(day)}
-                className={`px-1 cursor-pointer h-12 border ${
+                className={`px-1 cursor-pointer h-12 ${
                   isToday && activeDay === day && currentMonth === month
-                  ? "bg-green-500 text-white border-financeGradient"
-                  :isToday
-                    ? "border-green-500 bg-financeSidebar"
-                    : activeDay === day 
-                    ? "bg-financeGradient text-white"
+                    ? "bg-financeSidebar text-gray-700"
+                    : isToday
+                    ? "border border-financeGradient"
+                    : activeDay === day
+                    ? "bg-financeSidebar text-gray-700"
                     : "text-gray-700 hover:bg-financeSidebar"
                 }`}
               >
-                <p className="text-end text-[12px]">
+                <p className="text-center text-[12px]">
                   {day}
                 </p>
-                
+                {/* Only show sum if it is non-zero */}
+                {summedAmount !== 0 && (
+                  <div
+                    className={`text-[12px] text-center mt-1 ${
+                      isPositive ? "text-green-600" : "text-red-600"  // Green for positive, Red for negative
+                    }`}
+                  >
+                    {displayAmount}
+                  </div>
+                )}
               </div>
             );
           })}
 
           {/* Next Month Days */}
           {Array.from({ length: nextDays }).map((_, i) => (
-            <div key={`next-${i}`} className="text-gray-400 text-center px-1 border">
-              <p className="text-end text-[12px]">
+            <div key={`next-${i}`} className="text-gray-400 text-center px-1">
+              <p className="text-center text-[12px]">
                 {i + 1}
               </p>
-              
             </div>
           ))}
         </div>

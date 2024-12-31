@@ -2,7 +2,7 @@ import CurrentBalanceBox from '@/components/CurrentBalanceBox'
 import HeaderBox from '@/components/HeaderBox'
 import TransactionTable from '@/components/TransactionTable'
 import Calendar from '@/components/Calender'
-import { get_summary } from '@/lib/actions/transaction.actions'
+import { get_all_summary, get_summary } from '@/lib/actions/transaction.actions'
 import { create_JWT, get_transactionList, getLoggedInUser } from '@/lib/actions/user.actions'
 import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
 import React from 'react'
@@ -20,6 +20,10 @@ const Home = async () => {
 
   const transactions = await get_transactionList(jwt)
 
+  const summaries = await get_all_summary(jwt)
+
+  // console.log(summaries)
+
   let transactionSummary; // Declare the variable outside the try-catch block
 
   try {
@@ -32,6 +36,8 @@ const Home = async () => {
   const monthlyBalance = transactionSummary ? Number(transactionSummary["monthlyBalance"]) : 0;
   const monthlyExpenses = transactionSummary ? Number(transactionSummary["monthlyExpenses"]) : 0;
   const monthlySavings = transactionSummary ? Number(transactionSummary["monthlySavings"]) : 0;
+
+  // console.log(monthlyBalance)
 
   return (
     <section className='home'>
@@ -88,7 +94,7 @@ const Home = async () => {
         <div>
           <TransactionTable transactions={transactions} currency={loggedIn.currency}/>
         </div>
-        <Calendar />
+        <Calendar summaries={summaries}currency={loggedIn.currency}/>
       </div>
     </section>
   )

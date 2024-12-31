@@ -52,7 +52,7 @@ const TransactionTable = ( {transactions, currency}: TransactionTableProps ) => 
   const latestTenTransactions = convertedTransactions.slice(0, 10);
 
   return (
-    <Table>
+    <Table className="flex-col">
       <TableHeader>
         <TableRow className="bg-gray-50">
           <TableHead>Transaction</TableHead>
