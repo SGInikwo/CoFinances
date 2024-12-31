@@ -47,7 +47,7 @@ export async function initiate_jwt(jwt) {
   );
   
 
-  // console.log("Server Response:", response.data);
+  console.log("Server Response:", response.data);
 
   return response.data
 }
