@@ -88,8 +88,7 @@ export const signIn = async ({ email, password }: signInProps) => {
           sameSite: "strict",
           secure: true,
         });
-      } else {
-      }
+      } 
 
       const user = await getUserInfo({ userId: session.userId });
 

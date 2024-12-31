@@ -70,14 +70,14 @@ export async function send_jwt(jwt) {
 }
 
 export async function get_jwt(userId){
-  const get_jwt = await axios.get(`${API_URL}/api/usertoken/${userId}`,
+  const get_jwt = await axios.get(`${API_URL}/api/usertoken/get/${userId}`,
   );
   
   return get_jwt.data
 }
 
 export async function delete_jwt(userId){
-  const get_jwt = await axios.delete(`${API_URL}/api/usertoken/${userId}`,
+  const get_jwt = await axios.delete(`${API_URL}/api/usertoken/delete/${userId}`,
   );
   
 }
