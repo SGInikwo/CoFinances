@@ -24,7 +24,7 @@ import {
 import { Button } from './ui/button'
 import * as XLSX from "xlsx";
 import { create_JWT, getLoggedInUser } from '@/lib/actions/user.actions';
-import { get_cookie, get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
+import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
 import { Separator } from './ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -93,7 +93,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
               headers: {
                 Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
               },
-              withCredentials: true, // Ensures session cookies are sent
+              withCredentials: true, // Ensures session are sent
             }
           );
           // console.log("Server Response:", response.data);

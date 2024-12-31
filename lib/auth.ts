@@ -36,7 +36,7 @@ export async function initiate_jwt(jwt) {
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
       },
-      withCredentials: true, // Ensures session cookies are sent
+      withCredentials: true, // Ensures session are sent
     }
   );
   
@@ -53,7 +53,7 @@ export async function send_jwt(jwt) {
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
       },
-      withCredentials: true, // Ensures session cookies are sent
+      withCredentials: true, // Ensures session are sent
     }
   );
   

@@ -22,8 +22,6 @@ const Home = async () => {
 
   const summaries = await get_all_summary(jwt)
 
-  // console.log(summaries)
-
   let transactionSummary; // Declare the variable outside the try-catch block
 
   try {
@@ -36,8 +34,6 @@ const Home = async () => {
   const monthlyBalance = transactionSummary ? Number(transactionSummary["monthlyBalance"]) : 0;
   const monthlyExpenses = transactionSummary ? Number(transactionSummary["monthlyExpenses"]) : 0;
   const monthlySavings = transactionSummary ? Number(transactionSummary["monthlySavings"]) : 0;
-
-  // console.log(monthlyBalance)
 
   return (
     <section className='home'>

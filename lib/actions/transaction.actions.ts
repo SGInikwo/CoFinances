@@ -15,7 +15,7 @@ export async function push_data(jwt){
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
       },
-      withCredentials: true, // Ensures session cookies are sent
+      withCredentials: true, // Ensures session are sent
     }
   );
   
@@ -28,7 +28,7 @@ export async function get_summary(jwt){
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
       },
-      withCredentials: true, // Ensures session cookies are sent
+      withCredentials: true, // Ensures session are sent
     }
   );
   
@@ -41,7 +41,7 @@ export async function get_all_summary(jwt){
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
       },
-      withCredentials: true, // Ensures session cookies are sent
+      withCredentials: true, // Ensures session are sent
     }
   );
   
