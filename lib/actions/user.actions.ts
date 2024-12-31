@@ -88,14 +88,14 @@ export const signIn = async ({ email, password }: signInProps) => {
           sameSite: "strict",
           secure: true,
         });
-        // console.log("New session cookie set.");
       } else {
-        // console.log("Existing session cookie detected. Not overwriting.");
       }
 
       const user = await getUserInfo({ userId: session.userId });
 
       const jwt = await create_JWT()
+
+      console.log("create", jwt)
 
       await initiate_jwt(jwt)
 
@@ -192,7 +192,7 @@ export async function create_JWT(account?: any) {
     const jwtResponse = await account.createJWT();
     const jwt = jwtResponse.jwt;
 
-    // console.log("JWT created and stored in cookie:", jwt);
+    console.log("JWT created and stored in cookie:", jwt);
 
     return jwt;
 

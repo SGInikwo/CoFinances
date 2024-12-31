@@ -35,6 +35,7 @@ export async function get_cookie(){
 }
 
 export async function initiate_jwt(jwt) {
+  console.log("thisis", jwt)
   const response = await axios.post(`${API_URL}/api/usertoken`,
     null,
     {
