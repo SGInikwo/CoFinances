@@ -8,10 +8,7 @@ export default async function RootLayout({
   }>) {
     const loggedIn = await getLoggedInUser();
     
-    if (loggedIn) {
-      // Ensure the redirect happens correctly with Next.js behavior
-      redirect('/'); // This works, but remember it's important to handle async redirects correctly
-    }
+    if(loggedIn) redirect('/')
 
     return (
       <main>
