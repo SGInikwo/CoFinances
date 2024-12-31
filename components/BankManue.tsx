@@ -31,7 +31,7 @@ import { Loader2 } from 'lucide-react';
 import { push_data } from '@/lib/actions/transaction.actions';
 
 const{
-  FASTAPI_API_URL: API_URL,
+  NEXT_PUBLIC_FASTAPI_URL: API_URL,
 } = process.env
 
 interface RowData {

@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
 const{
-  FASTAPI_API_URL: API_URL,
+  NEXT_PUBLIC_FASTAPI_URL: API_URL,
 } = process.env
 
 

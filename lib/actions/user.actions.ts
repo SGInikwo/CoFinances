@@ -11,7 +11,7 @@ import axios from "axios"
 const{
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
-  FASTAPI_API_URL: API_URL,
+  NEXT_PUBLIC_FASTAPI_URL: API_URL,
 } = process.env
 
 export const getUserInfo = async ({ userId }: getUserInfoProps) => {

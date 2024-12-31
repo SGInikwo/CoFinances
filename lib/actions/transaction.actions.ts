@@ -1,7 +1,9 @@
+'use server'
+
 import axios from "axios";
 
 const{
-  FASTAPI_API_URL: API_URL,
+  NEXT_PUBLIC_FASTAPI_URL: API_URL,
 } = process.env
 
 export async function convert_currency(base, target){
