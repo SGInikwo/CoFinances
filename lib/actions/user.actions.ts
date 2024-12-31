@@ -11,6 +11,7 @@ import axios from "axios"
 const{
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
+  FASTAPI_API_URL: API_URL,
 } = process.env
 
 export const getUserInfo = async ({ userId }: getUserInfoProps) => {
@@ -204,7 +205,7 @@ export async function create_JWT(account?: any) {
 export async function get_transactionList(jwt) {
   try {
 
-    const get_transactions = await axios.get("http://localhost:8000/api/transactions/list",{
+    const get_transactions = await axios.get(`${API_URL}/api/transactions/list`,{
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
       },

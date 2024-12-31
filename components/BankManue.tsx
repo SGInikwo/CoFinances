@@ -30,6 +30,10 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { push_data } from '@/lib/actions/transaction.actions';
 
+const{
+  FASTAPI_API_URL: API_URL,
+} = process.env
+
 interface RowData {
   [key: string]: string | number | boolean; // Dynamic row structure
 }
@@ -87,7 +91,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
 
           }
 
-          const response = await axios.post("http://localhost:8000/api/transactions/", 
+          const response = await axios.post(`${API_URL}/api/transactions/`, 
             parsedData,
             {
               headers: {

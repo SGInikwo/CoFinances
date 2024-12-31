@@ -4,6 +4,11 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
+const{
+  FASTAPI_API_URL: API_URL,
+} = process.env
+
+
 export async function isJWTExpired(token: string) {
   try {
     const decodedToken: any = jwtDecode(token);
@@ -30,7 +35,7 @@ export async function get_cookie(){
 }
 
 export async function initiate_jwt(jwt) {
-  const response = await axios.post("http://localhost:8000/api/usertoken",
+  const response = await axios.post(`${API_URL}/api/usertoken`,
     null,
     {
       headers: {
@@ -47,7 +52,7 @@ export async function initiate_jwt(jwt) {
 }
 
 export async function send_jwt(jwt) {
-  const response = await axios.post("http://localhost:8000/api/usertoken/updateauth/",
+  const response = await axios.post(`${API_URL}/api/usertoken/updateauth/`,
     null,
     {
       headers: {
@@ -64,14 +69,14 @@ export async function send_jwt(jwt) {
 }
 
 export async function get_jwt(userId){
-  const get_jwt = await axios.get(`http://localhost:8000/api/usertoken/${userId}`,
+  const get_jwt = await axios.get(`${API_URL}/api/usertoken/${userId}`,
   );
   
   return get_jwt.data
 }
 
 export async function delete_jwt(userId){
-  const get_jwt = await axios.delete(`http://localhost:8000/api/usertoken/${userId}`,
+  const get_jwt = await axios.delete(`${API_URL}/api/usertoken/${userId}`,
   );
   
 }
