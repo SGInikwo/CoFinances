@@ -94,8 +94,6 @@ export const signIn = async ({ email, password }: signInProps) => {
 
       const jwt = await create_JWT()
 
-      console.log("create", jwt)
-
       await initiate_jwt(jwt)
 
       return parseStringify(user);
@@ -167,6 +165,7 @@ export async function getLoggedInUser() {
 export const logoutAccount = async () => {
   try {
     const user = await getLoggedInUser();
+
     await delete_jwt(user["$id"]);
 
     const { account } = await createSessionClient();
@@ -191,8 +190,6 @@ export async function create_JWT(account?: any) {
     const jwtResponse = await account.createJWT();
     const jwt = jwtResponse.jwt;
 
-    console.log("JWT created and stored in cookie:", jwt);
-
     return jwt;
 
   } catch (error) {
@@ -210,8 +207,6 @@ export async function get_transactionList(jwt) {
       },
       withCredentials: true, // Ensures session cookies are sent
     })
-
-    // console.log("Server Response:", get_transactions.data);
 
     return get_transactions.data
 

@@ -10,23 +10,33 @@ import React from 'react'
 const Home = async () => {
   const loggedIn = await getLoggedInUser();
 
-  let jwt = await get_jwt(loggedIn?.$id)
+  let transactions = [];
+  let summaries = [];
+  let monthlyBalance = 0;
+  let monthlyExpenses = 0;
+  let monthlySavings = 0;
 
-  if (await isJWTExpired(jwt)) {
-    jwt = await create_JWT()
-    await send_jwt(jwt)
-    jwt = await get_jwt(loggedIn?.$id)
+  if (loggedIn){
+    let jwt = await get_jwt(loggedIn?.$id)
+
+    if (await isJWTExpired(jwt)) {
+      jwt = await create_JWT()
+      await send_jwt(jwt)
+      jwt = await get_jwt(loggedIn?.$id)
+    }
+
+    const [transactionList, allSummaries, transactionSummary] = await Promise.all([
+      get_transactionList(jwt),
+      get_all_summary(jwt),
+      get_summary(jwt).catch(() => null), // Safely handle potential error
+    ]);
+
+    transactions = transactionList;
+    summaries = allSummaries;
+    monthlyBalance = transactionSummary?.monthlyBalance ? Number(transactionSummary.monthlyBalance) : 0;
+    monthlyExpenses = transactionSummary?.monthlyExpenses ? Number(transactionSummary.monthlyExpenses) : 0;
+    monthlySavings = transactionSummary?.monthlySavings ? Number(transactionSummary.monthlySavings) : 0;
   }
-
-  const [transactions, summaries, transactionSummary] = await Promise.all([
-    get_transactionList(jwt),
-    get_all_summary(jwt),
-    get_summary(jwt).catch(() => null), // Safely handle potential error
-  ]);
-
-  const monthlyBalance = transactionSummary?.monthlyBalance ? Number(transactionSummary.monthlyBalance) : 0;
-  const monthlyExpenses = transactionSummary?.monthlyExpenses ? Number(transactionSummary.monthlyExpenses) : 0;
-  const monthlySavings = transactionSummary?.monthlySavings ? Number(transactionSummary.monthlySavings) : 0;
 
   return (
     <section className='home'>
