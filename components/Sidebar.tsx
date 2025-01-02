@@ -20,10 +20,10 @@ const Sidebar = ( {user}: SidebarProps ) => {
             src='/icons/logo.svg'
             width={34}
             height={34}
-            alt='CoFinance Logo'
+            alt='CoFinances Logo'
             className='size-[36px] max-xl:size-14'
           />
-          <h1 className='sidebar-logo'>CoFinance</h1>
+          <h1 className='sidebar-logo'>CoFinances</h1>
         </Link>
 
         {sidebarLinks.map((item) => {

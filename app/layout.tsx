@@ -16,8 +16,8 @@ const avro = Arvo({
 })
 
 export const metadata: Metadata = {
-  title: "CoFinance",
-  description: "CoFinance is a web APP that helps in tracking your finances!",
+  title: "CoFinances",
+  description: "CoFinances is a web APP that helps in tracking your finances!",
   icons: {
     icon: 'icons/logo.svg'
   }
