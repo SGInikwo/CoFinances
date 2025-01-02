@@ -25,10 +25,12 @@ import CustomMenue from './CustomMenue'
 import { useRouter } from 'next/navigation'
 import { signIn, signUp } from '@/lib/actions/user.actions'
 import bcrypt from 'bcryptjs'
+import { useToast } from '@/hooks/use-toast';
 
 
 const AuthForm = ({ type }: {type: string}) => {
   const router = useRouter();
+  const { toast } = useToast()
   const [user, setuser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,7 +74,23 @@ const AuthForm = ({ type }: {type: string}) => {
           password:data.password,
         })
 
-        if(response) router.push('/')
+        if(response) {
+          toast({
+            duration:1000,
+            variant: "succes",
+            title: "Loggin succes",
+            description: "Your data is being saved.",
+          });
+          router.push('/')
+        } else {
+          toast({
+            duration:3000,
+            variant: "destructive",
+            title: "Email and Password combination incorrect",
+            description: "There was a problem with your request.",
+          });
+
+        }
 
       }
     } catch (error) {

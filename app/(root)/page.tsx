@@ -45,9 +45,9 @@ const Home = async () => {
           type='greeting'
           title='Welcome'
           user={loggedIn?.firstName || 'Guest'}
-          userInfo={loggedIn.$id}
+          userInfo={loggedIn?.$id}
           subtext='Access and manage your spending and savings'
-          currency={String(loggedIn.currency)}
+          currency={String(loggedIn?.currency)}
         />
 
         <div className='flex gap-1 w-full max-md:flex-col'>
@@ -57,7 +57,7 @@ const Home = async () => {
             totalCurrentBalance={monthlyBalance}
             totalPreviousBalance={520.54}
             totalTransactions={30}
-            user_currency={loggedIn.currency}
+            user_currency={loggedIn?.currency}
           />
 
           <CurrentBalanceBox
@@ -66,7 +66,7 @@ const Home = async () => {
             totalCurrentBalance={monthlyExpenses}
             totalPreviousBalance={100.54}
             totalTransactions={30}
-            user_currency={loggedIn.currency}
+            user_currency={loggedIn?.currency}
           />
 
           <CurrentBalanceBox
@@ -75,7 +75,7 @@ const Home = async () => {
             totalCurrentBalance={monthlySavings}
             totalPreviousBalance={500.20}
             totalTransactions={1}
-            user_currency={loggedIn.currency}
+            user_currency={loggedIn?.currency}
           />
 
           <div className='hidden'>
@@ -85,15 +85,15 @@ const Home = async () => {
               totalCurrentBalance={100050.00}
               totalPreviousBalance={500.20}
               totalTransactions={1}
-              user_currency={loggedIn.currency}
+              user_currency={loggedIn?.currency}
             />
           </div>
           
         </div>
         <div>
-          <TransactionTable transactions={transactions} currency={loggedIn.currency}/>
+          <TransactionTable transactions={transactions} currency={loggedIn?.currency}/>
         </div>
-        <Calendar summaries={summaries}currency={loggedIn.currency}/>
+        <Calendar summaries={summaries}currency={loggedIn?.currency}/>
       </div>
     </section>
   )
