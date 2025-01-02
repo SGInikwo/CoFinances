@@ -43,10 +43,10 @@ const MobileNav = ({ user }: MobileNavProps) => {
               src='/icons/logo.svg'
               width={38}
               height={38}
-              alt='CoFinance Logo'
+              alt='CoFinances Logo'
               // className='size-[36px] max-xl:size-14'
             />
-            <h1 className='text-26 font-avro font-semibold text-black'>CoFinance</h1>
+            <h1 className='text-26 font-avro font-semibold text-black'>CoFinances</h1>
           </Link>
           <div className='mobileNav-sheet'>
             <SheetClose asChild>
