@@ -44,22 +44,6 @@ interface CustomInput {
   placeholder: string;
 }
 
-// interface CustomInput {
-//   control: Control<z.infer<typeof formSchema>>,
-//   setValue: <TFieldName extends keyof z.infer<typeof formSchema>>(
-//     name: TFieldName,
-//     value: z.infer<typeof formSchema>[TFieldName],
-//     options?: {
-//       shouldValidate?: boolean;
-//       shouldDirty?: boolean;
-//       shouldTouch?: boolean;
-//     }
-//   ) => void;
-//   name: FieldPath<z.infer<typeof formSchema>>,
-//   label: string,
-//   placeholder: string
-// }
-
 const CustomMenue = ({ control, setValue, name, label, placeholder }: CustomInput) => {
   const [isOpen, setIsOpen] = React.useState(false);
 

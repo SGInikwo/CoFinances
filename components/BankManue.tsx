@@ -28,7 +28,7 @@ import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
 import { Separator } from './ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { push_data } from '@/lib/actions/transaction.actions';
+import { push_data, send_transactions } from '@/lib/actions/transaction.actions';
 
 const{
   NEXT_PUBLIC_FASTAPI_URL: API_URL,
@@ -91,16 +91,10 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
 
           }
 
-          const response = await axios.post(`${API_URL}/api/transactions/`, 
-            parsedData,
-            {
-              headers: {
-                Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
-              },
-              withCredentials: true, // Ensures session are sent
-            }
-          );
-          // console.log("Server Response:", response.data);
+          console.log("name", API_URL)
+
+          const response = await send_transactions(jwt, parsedData)
+          
           await push_data(jwt)
           
           setIsOpen(false);

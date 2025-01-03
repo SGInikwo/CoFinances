@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils"
 import { create_JWT, updateuserCurrency } from "@/lib/actions/user.actions"
 import { push_data } from "@/lib/actions/transaction.actions"
 import { get_jwt, isJWTExpired, send_jwt } from "@/lib/auth"
+import CurrencyLoader from "./CurrencyLoader"
 
 
 const currencies = [
@@ -33,23 +34,28 @@ const currencies = [
 const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency}: HeaderBoxProps) => {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState(currency)
+  const [openDialog, setOpenDialog] = React.useState(false);
+
 
   const updateCurrency = async (selectedCurrency: string) => {
     try {
       await updateuserCurrency({ newCurrency: selectedCurrency })
 
       let jwt = await get_jwt(userInfo)
+      
       if( await isJWTExpired(jwt)){
 
         jwt = await create_JWT()
         
         await send_jwt(jwt)
+
         jwt = await get_jwt(userInfo)
-      }else{
 
       }
-      await push_data(jwt)
 
+      setOpenDialog(true)
+      await push_data(jwt)
+      setOpenDialog(false)
       window.location.reload(); 
     } catch (error) {
       console.error("Error updating currency: ", error)
@@ -119,6 +125,8 @@ const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency}: He
           </Command>
         </PopoverContent>
       </Popover>
+
+      <CurrencyLoader open={openDialog} setOpen={setOpenDialog}/>
     </section>
   )
 }

@@ -52,3 +52,17 @@ export async function get_all_summary(jwt){
   
   return response.data
 }
+
+export async function send_transactions(jwt, parsedData){
+  const response = await axios.post(`${API_URL}/api/transactions/`,
+    parsedData,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session are sent
+    }
+  );
+  
+  return response.data
+}
