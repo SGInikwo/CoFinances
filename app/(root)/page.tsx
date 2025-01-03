@@ -2,12 +2,22 @@ import CurrentBalanceBox from '@/components/CurrentBalanceBox'
 import HeaderBox from '@/components/HeaderBox'
 import TransactionTable from '@/components/TransactionTable'
 import Calendar from '@/components/Calender'
-import { get_all_summary, get_summary } from '@/lib/actions/transaction.actions'
+import { get_all_summary, get_summary, get_summary_months } from '@/lib/actions/transaction.actions'
 import { create_JWT, get_transactionList, getLoggedInUser } from '@/lib/actions/user.actions'
 import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
-import React from 'react'
+import { cookies } from 'next/headers'
+import { notFound } from 'next/navigation'
 
-const Home = async () => {
+interface PageProps {
+  searchParams: {
+    month: string | undefined;
+    year: string | undefined;
+  };
+}
+
+const Home = async ({ searchParams }: PageProps) => {
+  const { month: selectedMonth="null", year: selectedYear="null" } = searchParams;
+
   const loggedIn = await getLoggedInUser();
 
   let transactions = [];
@@ -15,28 +25,33 @@ const Home = async () => {
   let monthlyBalance = 0;
   let monthlyExpenses = 0;
   let monthlySavings = 0;
+  let summary_month = [];
 
-  if (loggedIn){
-    let jwt = await get_jwt(loggedIn?.$id)
-
-    if (await isJWTExpired(jwt)) {
-      jwt = await create_JWT()
-      await send_jwt(jwt)
-      jwt = await get_jwt(loggedIn?.$id)
-    }
-
-    const [transactionList, allSummaries, transactionSummary] = await Promise.all([
-      get_transactionList(jwt),
-      get_all_summary(jwt),
-      get_summary(jwt).catch(() => null), // Safely handle potential error
-    ]);
-
-    transactions = transactionList;
-    summaries = allSummaries;
-    monthlyBalance = transactionSummary?.monthlyBalance ? Number(transactionSummary.monthlyBalance) : 0;
-    monthlyExpenses = transactionSummary?.monthlyExpenses ? Number(transactionSummary.monthlyExpenses) : 0;
-    monthlySavings = transactionSummary?.monthlySavings ? Number(transactionSummary.monthlySavings) : 0;
+  if (!loggedIn) {
+    notFound(); // or handle it appropriately
   }
+
+  let jwt = await get_jwt(loggedIn?.$id);
+
+  if (await isJWTExpired(jwt)) {
+    jwt = await create_JWT();
+    await send_jwt(jwt);
+    jwt = await get_jwt(loggedIn?.$id);
+  }
+
+  const [transactionList, allSummaries, monthList, transactionSummary] = await Promise.all([
+    get_transactionList(jwt),
+    get_all_summary(jwt),
+    get_summary_months(jwt),
+    get_summary(jwt, selectedMonth, selectedYear).catch(() => null), // Pass selectedMonth to get_summary
+  ]);
+
+  transactions = transactionList;
+  summaries = allSummaries;
+  summary_month = monthList;
+  monthlyBalance = transactionSummary?.monthlyBalance ? Number(transactionSummary.monthlyBalance) : 0;
+  monthlyExpenses = transactionSummary?.monthlyExpenses ? Number(transactionSummary.monthlyExpenses) : 0;
+  monthlySavings = transactionSummary?.monthlySavings ? Number(transactionSummary.monthlySavings) : 0;
 
   return (
     <section className='home'>
@@ -48,6 +63,9 @@ const Home = async () => {
           userInfo={loggedIn?.$id}
           subtext='Access and manage your spending and savings'
           currency={String(loggedIn?.currency)}
+          months={summary_month}
+          currentMonth={selectedMonth}
+          currentYear={selectedYear}
         />
 
         <div className='flex gap-1 w-full max-md:flex-col'>
@@ -96,7 +114,7 @@ const Home = async () => {
         <Calendar summaries={summaries}currency={loggedIn?.currency}/>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

@@ -27,8 +27,22 @@ export async function push_data(jwt){
   return response.data
 }
 
-export async function get_summary(jwt){
-  const response = await axios.get(`${API_URL}/api/summary/summary`,
+// export async function get_summary(jwt){
+//   const response = await axios.get(`${API_URL}/api/summary/summary`,
+//     {
+//       headers: {
+//         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+//       },
+//       withCredentials: true, // Ensures session are sent
+//     }
+//   );
+  
+//   return response.data
+// }
+
+export async function get_summary(jwt, month, year){
+  console.log("check", month, year)
+  const response = await axios.get(`${API_URL}/api/summary/summary-${month}-${year}`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
@@ -56,6 +70,19 @@ export async function get_all_summary(jwt){
 export async function send_transactions(jwt, parsedData){
   const response = await axios.post(`${API_URL}/api/transactions/`,
     parsedData,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session are sent
+    }
+  );
+  
+  return response.data
+}
+
+export async function get_summary_months(jwt){
+  const response = await axios.get(`${API_URL}/api/summary/months`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header

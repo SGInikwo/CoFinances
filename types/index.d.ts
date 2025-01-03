@@ -33,6 +33,9 @@ declare interface HeaderBoxProps {
   user?: string;
   userInfo: string;
   currency: string;
+  months: Array;
+  currentMonth?: string;
+  currentYear?: string;
 }
 
 declare interface CurrentBalanceBoxProps {

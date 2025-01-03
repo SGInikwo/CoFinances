@@ -21,6 +21,8 @@ import { create_JWT, updateuserCurrency } from "@/lib/actions/user.actions"
 import { push_data } from "@/lib/actions/transaction.actions"
 import { get_jwt, isJWTExpired, send_jwt } from "@/lib/auth"
 import CurrencyLoader from "./CurrencyLoader"
+import CurrencyMenue from "./CurrencyMenue"
+import MonthCarousel from "./MonthCarousel"
 
 
 const currencies = [
@@ -31,7 +33,7 @@ const currencies = [
   { label: "USD", value: "4" },
 ] as const
 
-const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency}: HeaderBoxProps) => {
+const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency, months, currentMonth, currentYear}: HeaderBoxProps) => {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState(currency)
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -75,7 +77,11 @@ const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency}: He
         <p className='header-box-subtext'>{subtext}</p>
       </div>
 
-      <Popover open={open} onOpenChange={setOpen}>
+      <MonthCarousel months={months} selectedMonth={currentMonth} selectedYear={currentYear}/>
+
+      <CurrencyMenue currencies={currencies} open={open} setOpen={setOpen} value={value} setValue={setValue} updateCurrency={updateCurrency}/>
+
+      {/* <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -124,7 +130,7 @@ const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency}: He
             </CommandList>
           </Command>
         </PopoverContent>
-      </Popover>
+      </Popover> */}
 
       <CurrencyLoader open={openDialog} setOpen={setOpenDialog}/>
     </section>
