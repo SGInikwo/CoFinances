@@ -7,16 +7,19 @@ import { create_JWT, get_transactionList, getLoggedInUser } from '@/lib/actions/
 import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
+import MonthCarousel from '@/components/MonthCarousel'
+import { Pagination } from '@/components/Pagination'
 
 interface PageProps {
   searchParams: {
     month: string | undefined;
     year: string | undefined;
+    page: number | undefined;
   };
 }
 
 const Home = async ({ searchParams }: PageProps) => {
-  const { month: selectedMonth="null", year: selectedYear="null" } = searchParams;
+  const { month: selectedMonth="null", year: selectedYear="null", page: currentPage=1 } = searchParams;
 
   const loggedIn = await getLoggedInUser();
 
@@ -40,7 +43,7 @@ const Home = async ({ searchParams }: PageProps) => {
   }
 
   const [transactionList, allSummaries, monthList, transactionSummary] = await Promise.all([
-    get_transactionList(jwt),
+    get_transactionList(jwt, selectedMonth, selectedYear),
     get_all_summary(jwt),
     get_summary_months(jwt),
     get_summary(jwt, selectedMonth, selectedYear).catch(() => null), // Pass selectedMonth to get_summary
@@ -63,10 +66,11 @@ const Home = async ({ searchParams }: PageProps) => {
           userInfo={loggedIn?.$id}
           subtext='Access and manage your spending and savings'
           currency={String(loggedIn?.currency)}
-          months={summary_month}
-          currentMonth={selectedMonth}
-          currentYear={selectedYear}
         />
+
+        <div className='flex justify-center items-center'>
+          <MonthCarousel months={summary_month} selectedMonth={selectedMonth} selectedYear={selectedYear}/>
+        </div>
 
         <div className='flex gap-1 w-full max-md:flex-col'>
           <CurrentBalanceBox
@@ -109,7 +113,8 @@ const Home = async ({ searchParams }: PageProps) => {
           
         </div>
         <div>
-          <TransactionTable transactions={transactions} currency={loggedIn?.currency}/>
+          <TransactionTable transactions={transactions} currency={loggedIn?.currency} page={Number(currentPage)} rowPerPage={10}/>
+          {/* <Pagination page={1} totalPages={5} /> */}
         </div>
         <Calendar summaries={summaries}currency={loggedIn?.currency}/>
       </div>

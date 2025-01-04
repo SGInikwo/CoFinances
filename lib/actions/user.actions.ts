@@ -198,10 +198,10 @@ export async function create_JWT(account?: any) {
 }
 
 
-export async function get_transactionList(jwt) {
+export async function get_transactionList(jwt, month, year) {
   try {
 
-    const get_transactions = await axios.get(`${API_URL}/api/transactions/list`,{
+    const get_transactions = await axios.get(`${API_URL}/api/transactions/list-${month}-${year}`,{
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
       },

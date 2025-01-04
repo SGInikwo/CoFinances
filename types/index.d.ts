@@ -33,9 +33,6 @@ declare interface HeaderBoxProps {
   user?: string;
   userInfo: string;
   currency: string;
-  months: Array;
-  currentMonth?: string;
-  currentYear?: string;
 }
 
 declare interface CurrentBalanceBoxProps {
@@ -86,4 +83,9 @@ declare interface Transaction{
 
 declare interface TransactionTableProps {
   transactions: Transaction[];
+}
+
+declare interface PaginationProps {
+  page: number;
+  totalPages: number;
 }

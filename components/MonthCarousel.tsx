@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -50,7 +52,7 @@ const MonthCarousel = ({ months, selectedMonth, selectedYear }) => {
     const items = carouselRef.current?.querySelectorAll("[data-carousel-item]");
     if (items && items.length > 0) {
       const currentItem = items[currentIndex];
-      currentItem?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+      currentItem?.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" });
     }
   }, [currentIndex]);
 
@@ -63,7 +65,7 @@ const MonthCarousel = ({ months, selectedMonth, selectedYear }) => {
               <div>
                 <Card>
                   <CardContent className="flex items-center justify-center p-1">
-                    <span className="text-lg font-semibold">{monthObj.month}</span>
+                    <span className="font-bold">{monthObj.month}</span>
                   </CardContent>
                 </Card>
               </div>

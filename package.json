@@ -28,6 +28,7 @@
     "lucide-react": "^0.468.0",
     "next": "14.2.16",
     "node-appwrite": "^14.1.0",
+    "query-string": "^9.1.1",
     "react": "^18",
     "react-countup": "^6.5.3",
     "react-dom": "^18",
@@ -50,6 +51,6 @@
     "typescript": "^5"
   },
   "resolutions": {
-  "@radix-ui/react-slot": "latest"
-}
+    "@radix-ui/react-slot": "latest"
+  }
 }
