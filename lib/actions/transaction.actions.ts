@@ -53,9 +53,28 @@ export async function get_all_summary(jwt){
   return response.data
 }
 
-export async function send_transactions(jwt, parsedData){
+export async function send_transactions(jwt, parsedData, clientCurrency){
+  const payload = {
+    transactions: parsedData,  // Ensure parsedData matches the format of Transactions_ing
+    clientCurrency: String(clientCurrency),  // Ensure clientCurrency is valid (string)
+  };
+
   const response = await axios.post(`${API_URL}/api/transactions/`,
-    parsedData,
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session are sent
+    }
+  );
+  
+  return response.data
+}
+
+export async function update_transaction_currency(jwt, clientCurrency){
+  const response = await axios.post(`${API_URL}/api/transactions/update_balances-${clientCurrency}`,
+    null,
     {
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header

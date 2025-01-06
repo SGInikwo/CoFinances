@@ -2,13 +2,14 @@ import CurrentBalanceBox from '@/components/CurrentBalanceBox'
 import HeaderBox from '@/components/HeaderBox'
 import TransactionTable from '@/components/TransactionTable'
 import Calendar from '@/components/Calender'
-import { get_all_summary, get_summary, get_summary_months } from '@/lib/actions/transaction.actions'
+import { get_all_summary, get_summary, get_summary_months, update_transaction_currency } from '@/lib/actions/transaction.actions'
 import { create_JWT, get_transactionList, getLoggedInUser } from '@/lib/actions/user.actions'
 import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import MonthCarousel from '@/components/MonthCarousel'
 import { Pagination } from '@/components/Pagination'
+import ExpensesGraph from '@/components/ExpensesGraph'
 
 interface PageProps {
   searchParams: {
@@ -28,6 +29,9 @@ const Home = async ({ searchParams }: PageProps) => {
   let monthlyBalance = 0;
   let monthlyExpenses = 0;
   let monthlySavings = 0;
+  let earliestBalance = 0;
+  let earliestExpenses = 0;
+  let earliestSavings = 0;
   let summary_month = [];
 
   if (!loggedIn) {
@@ -42,6 +46,7 @@ const Home = async ({ searchParams }: PageProps) => {
     jwt = await get_jwt(loggedIn?.$id);
   }
 
+  
   const [transactionList, allSummaries, monthList, transactionSummary] = await Promise.all([
     get_transactionList(jwt, selectedMonth, selectedYear),
     get_all_summary(jwt),
@@ -56,9 +61,18 @@ const Home = async ({ searchParams }: PageProps) => {
   monthlyExpenses = transactionSummary?.monthlyExpenses ? Number(transactionSummary.monthlyExpenses) : 0;
   monthlySavings = transactionSummary?.monthlySavings ? Number(transactionSummary.monthlySavings) : 0;
 
+  earliestBalance = transactionSummary?.earliestBalance ? Number(transactionSummary.earliestBalance) : 0;
+  earliestExpenses = transactionSummary?.earliestExpenses ? Number(transactionSummary.earliestExpenses) : 0;
+  earliestSavings = transactionSummary?.earliestSavings ? Number(transactionSummary.earliestSavings) : 0;
+
+  const percBalance = (monthlyBalance - earliestBalance) / earliestBalance
+  const percExpenses = (monthlyExpenses - earliestExpenses) / earliestExpenses
+  const percSavings = (monthlySavings - earliestSavings) / earliestSavings
+
   return (
     <section className='home'>
       <div className='home-content'>
+        {/* Top of the bage (welcome) */}
         <HeaderBox 
           type='greeting'
           title='Welcome'
@@ -72,13 +86,14 @@ const Home = async ({ searchParams }: PageProps) => {
           <MonthCarousel months={summary_month} selectedMonth={selectedMonth} selectedYear={selectedYear}/>
         </div>
 
+        {/* Summaries */}
         <div className='flex gap-1 w-full max-md:flex-col'>
           <CurrentBalanceBox
             type='Balance'
             image_name='icons/money_balance.svg'
             totalCurrentBalance={monthlyBalance}
-            totalPreviousBalance={520.54}
-            totalTransactions={30}
+            totalPreviousBalance={earliestBalance}
+            totalTransactions={percBalance}
             user_currency={loggedIn?.currency}
           />
 
@@ -86,8 +101,8 @@ const Home = async ({ searchParams }: PageProps) => {
             type='Expense'
             image_name='icons/expens.svg'
             totalCurrentBalance={monthlyExpenses}
-            totalPreviousBalance={100.54}
-            totalTransactions={30}
+            totalPreviousBalance={earliestExpenses}
+            totalTransactions={percExpenses}
             user_currency={loggedIn?.currency}
           />
 
@@ -95,8 +110,8 @@ const Home = async ({ searchParams }: PageProps) => {
             type='Savings'
             image_name='icons/bank.svg'
             totalCurrentBalance={monthlySavings}
-            totalPreviousBalance={500.20}
-            totalTransactions={1}
+            totalPreviousBalance={earliestSavings}
+            totalTransactions={percSavings}
             user_currency={loggedIn?.currency}
           />
 
@@ -110,13 +125,22 @@ const Home = async ({ searchParams }: PageProps) => {
               user_currency={loggedIn?.currency}
             />
           </div>
-          
         </div>
+        
+        {/* Graph and Calendar */}
+        <div className="flex w-full h-full gap-2 max-md:flex-col">
+          <div className="flex-[1_1_60%] border rounded-lg">
+            <ExpensesGraph transactions={transactions} currency={loggedIn?.currency}/>
+          </div>
+          <div className="flex-[1_1_40%]">
+            <Calendar summaries={summaries} currency={loggedIn?.currency} />
+          </div>
+        </div>
+
+        {/* Transaction Table */}
         <div>
           <TransactionTable transactions={transactions} currency={loggedIn?.currency} page={Number(currentPage)} rowPerPage={10}/>
-          {/* <Pagination page={1} totalPages={5} /> */}
         </div>
-        <Calendar summaries={summaries}currency={loggedIn?.currency}/>
       </div>
     </section>
   );

@@ -148,7 +148,7 @@ const Calendar = ({ summaries, currency }) => {
                 onClick={() => handleDayClick(day)}
                 className={`px-1 cursor-pointer h-12 ${
                   isToday && activeDay === day && currentMonth === month
-                    ? "bg-financeSidebar text-gray-700"
+                    ? "bg-financeSidebar border border-financeGradient text-gray-700"
                     : isToday
                     ? "border border-financeGradient"
                     : activeDay === day

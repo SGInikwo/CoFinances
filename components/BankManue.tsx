@@ -29,6 +29,15 @@ import { Separator } from './ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { push_data, send_transactions } from '@/lib/actions/transaction.actions';
+import CurrencyMenue from './CurrencyMenue';
+
+const currencies = [
+  { label: "EUR", value: "0" },
+  { label: "KRW", value: "1" },
+  { label: "KES", value: "2" },
+  { label: "GBP", value: "3" },
+  { label: "USD", value: "4" },
+] as const
 
 const{
   NEXT_PUBLIC_FASTAPI_URL: API_URL,
@@ -42,7 +51,16 @@ interface BankManueProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
+const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
+  const [open, setOpen] = React.useState(false)
+  const [value, setValue] = React.useState(currency)
+  // const [openDialog, setOpenDialog] = React.useState(false);
+  const [clientCurrency, setclientCurrency] = React.useState(currency);
+  
+  const updateCurrency = async (selectedCurrency: string) => {
+    setclientCurrency(selectedCurrency)
+  }
+
   const { toast } = useToast()
   const [data, setData] = useState<RowData[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -93,9 +111,9 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
 
           console.log("name", API_URL)
 
-          const response = await send_transactions(jwt, parsedData)
+          const response = await send_transactions(jwt, parsedData, clientCurrency)
           
-          await push_data(jwt)
+          // await push_data(jwt)
           
           setIsOpen(false);
           toast({
@@ -157,6 +175,9 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
                       </CardDescription> */}
                     </CardHeader>
                     <CardContent className="space-y-2">
+
+                      <CurrencyMenue currencies={currencies} open={open} setOpen={setOpen} value={value} setValue={setValue} updateCurrency={updateCurrency}/>
+                      
                       <div className="flex justify-center items-center space-y-1">
                         {/* Button acting as a file input */}
                         <Button

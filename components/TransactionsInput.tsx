@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import CurrencyMenue from "./CurrencyMenue"
 import {
   Dialog,
   DialogTrigger,
@@ -8,8 +9,9 @@ import {
 import BankManue from './BankManue';
 
 
-const TransactionsInput = () => {
+const TransactionsInput = ({currency}) => {
   const [isOpen, setIsOpen] = React.useState(false);
+
 
   return (
     <div className='sidebar-link hover:bg-financeGradient hover:text-white hover:cursor-pointer md:justify-center md:items-center'>
@@ -32,7 +34,7 @@ const TransactionsInput = () => {
           </div>
         </DialogTrigger>
 
-        <BankManue setIsOpen={setIsOpen} />
+        <BankManue setIsOpen={setIsOpen} currency={currency}/>
         
       </Dialog>
     </div>

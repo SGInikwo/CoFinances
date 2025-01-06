@@ -27,12 +27,12 @@ const CurrentBalanceBox = ({ type, image_name, totalCurrentBalance, totalPreviou
             </div>
             
             <div className='font-normal text-10 items-center p-3'>
-              <AnimatedCounter amount={totalPreviousBalance} currency='↑'/>
+              <AnimatedCounter amount={totalTransactions} currency='%'/>
             </div>
           </div>
 
           <div className='flex gap-1 text-10 w-33'>
-            <AnimatedCounter amount={totalPreviousBalance} currency={`+ ${currency}`}/>
+            <AnimatedCounter amount={totalPreviousBalance} currency={`${currency}`}/>
 
             <div className=''>
               from last month

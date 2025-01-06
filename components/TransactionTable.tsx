@@ -33,9 +33,9 @@ interface TransactionTableProps {
 }
 
 const TransactionTable = ( {transactions, currency, page=1, rowPerPage=10}: TransactionTableProps ) => {
-  const [convertedTransactions, setConvertedTransactions] = useState<
-    (Transaction & { convertedAmount: string })[]
-  >([]);
+  // const [convertedTransactions, setConvertedTransactions] = useState<
+  //   (Transaction & { convertedAmount: string })[]
+  // >([]);
 
   const rowsPerPage = rowPerPage;
   const totalPages = Math.ceil(transactions.length / rowsPerPage);
@@ -44,24 +44,24 @@ const TransactionTable = ( {transactions, currency, page=1, rowPerPage=10}: Tran
   const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
 
 
-  useEffect(() => {
-    const fetchConvertedTransactions = async () => {
-      const updatedTransactions = await Promise.all(
-        transactions.map(async (t) => {
-          const rate = await convert_currency(t.currency, currency);
-          const convertedAmount = formatAmount(Number(t.amount) * rate, currency);
-          return { ...t, convertedAmount };
-        })
-      );
-      setConvertedTransactions(updatedTransactions);
-    };
+  // useEffect(() => {
+  //   const fetchConvertedTransactions = async () => {
+  //     const updatedTransactions = await Promise.all(
+  //       transactions.map(async (t) => {
+  //         const rate = await convert_currency(t.currency, currency);
+  //         const convertedAmount = formatAmount(Number(t.amount) * rate, currency);
+  //         return { ...t, convertedAmount };
+  //       })
+  //     );
+  //     setConvertedTransactions(updatedTransactions);
+  //   };
 
-    fetchConvertedTransactions();
-  }, [transactions]);
+  //   fetchConvertedTransactions();
+  // }, [transactions]);
   
   // const latestTenTransactions = convertedTransactions.slice(0, 10);
 
-  const currentTransactions = convertedTransactions.slice(
+  const currentTransactions = transactions.slice(
     indexOfFirstTransaction, indexOfLastTransaction
   )
 
@@ -80,6 +80,7 @@ const TransactionTable = ( {transactions, currency, page=1, rowPerPage=10}: Tran
         </TableHeader>
         <TableBody>
           {currentTransactions.map((t) => {
+            const convertedAmount = formatAmount(Number(t.amount), currency);
             return(
               <TableRow key={t.id}>
               <TableCell>
@@ -91,7 +92,7 @@ const TransactionTable = ( {transactions, currency, page=1, rowPerPage=10}: Tran
               </TableCell>
 
               <TableCell>
-                {t.convertedAmount}
+                {convertedAmount}
               </TableCell>
 
               <TableCell>

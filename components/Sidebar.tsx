@@ -54,7 +54,7 @@ const Sidebar = ( {user}: SidebarProps ) => {
         })}
       </nav>
       <div>
-        <TransactionsInput />
+        <TransactionsInput currency={String(user?.currency)} />
         <Footer user={user} />
       </div>
       
