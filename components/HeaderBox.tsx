@@ -18,8 +18,11 @@ import { Button } from './ui/button'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import { create_JWT, updateuserCurrency } from "@/lib/actions/user.actions"
-import { push_data } from "@/lib/actions/transaction.actions"
+import { push_data, update_transaction_currency } from "@/lib/actions/transaction.actions"
 import { get_jwt, isJWTExpired, send_jwt } from "@/lib/auth"
+import CurrencyLoader from "./CurrencyLoader"
+import CurrencyMenue from "./CurrencyMenue"
+import MonthCarousel from "./MonthCarousel"
 
 
 const currencies = [
@@ -33,22 +36,29 @@ const currencies = [
 const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency}: HeaderBoxProps) => {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState(currency)
+  const [openDialog, setOpenDialog] = React.useState(false);
+
 
   const updateCurrency = async (selectedCurrency: string) => {
     try {
       await updateuserCurrency({ newCurrency: selectedCurrency })
 
       let jwt = await get_jwt(userInfo)
+      
       if( await isJWTExpired(jwt)){
 
         jwt = await create_JWT()
         
         await send_jwt(jwt)
+
         jwt = await get_jwt(userInfo)
-      }else{
 
       }
+
+      setOpenDialog(true)
+      await update_transaction_currency(jwt, selectedCurrency)
       await push_data(jwt)
+      setOpenDialog(false)
 
       window.location.reload(); 
     } catch (error) {
@@ -69,56 +79,9 @@ const HeaderBox = ({ type='title', title, subtext, user, userInfo, currency}: He
         <p className='header-box-subtext'>{subtext}</p>
       </div>
 
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-[80px] justify-between rounded-full hover:border-financeGradient"
-          >
-            {value
-              ? currencies.find((currency) => currency.value === value)?.label
-              : "Select framework..."}
-            <ChevronsUpDown className="opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder="Search framework..." className="h-9" />
-            <CommandList>
-              <CommandEmpty>No framework found.</CommandEmpty>
-              <CommandGroup>
-                {currencies.map((currency) => (
-                  <CommandItem
-                    key={currency.value}
-                    value={currency.value}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue)
-                      updateCurrency(currentValue)
-                      setOpen(false)
-                    }}
-                    className={cn(
-                      "cursor-pointer bg-white",
-                      "hover:bg-financeSidebar", // Hover state
-                      "aria-selected:bg-financeSidebar", // Keyboard focus (overrides hover)
-                      "hover:bg-white aria-selected:hover:bg-financeSidebar"
-                    )}
-                  >
-                    {currency.label}
-                    <Check
-                      className={cn(
-                        "ml-auto",
-                        value === currency.value ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <CurrencyMenue currencies={currencies} open={open} setOpen={setOpen} value={value} setValue={setValue} updateCurrency={updateCurrency}/>
+
+      <CurrencyLoader open={openDialog} setOpen={setOpenDialog}/>
     </section>
   )
 }

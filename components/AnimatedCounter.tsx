@@ -10,7 +10,11 @@ const AnimatedCounter = ({ amount, currency }: { amount: number, currency: strin
       minimumFractionDigits: currency === '₩' ? 0 : 2,
       maximumFractionDigits: currency === '₩' ? 0 : 2,
     });
-    return value < 0 ? `${currency}${formattedValue}` : `${currency}${formattedValue}`;
+    if (currency === "%"){
+      return  value < 0 ? `${formattedValue}${currency}` : `${formattedValue}${currency}`;
+    }
+    return  value < 0 ? `${currency}${formattedValue}` : `${currency}${formattedValue}`;
+    
   };
 
   return (

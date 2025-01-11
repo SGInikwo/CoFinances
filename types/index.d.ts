@@ -84,3 +84,8 @@ declare interface Transaction{
 declare interface TransactionTableProps {
   transactions: Transaction[];
 }
+
+declare interface PaginationProps {
+  page: number;
+  totalPages: number;
+}

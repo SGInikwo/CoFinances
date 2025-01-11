@@ -2,7 +2,9 @@ import React from 'react'
 
 const Budget = () => {
   return (
-    <div>Budget</div>
+    <div>
+      Budget page, In progress
+    </div>
   )
 }
 

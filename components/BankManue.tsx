@@ -28,7 +28,16 @@ import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
 import { Separator } from './ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { push_data } from '@/lib/actions/transaction.actions';
+import { push_data, send_transactions } from '@/lib/actions/transaction.actions';
+import CurrencyMenue from './CurrencyMenue';
+
+const currencies = [
+  { label: "EUR", value: "0" },
+  { label: "KRW", value: "1" },
+  { label: "KES", value: "2" },
+  { label: "GBP", value: "3" },
+  { label: "USD", value: "4" },
+] as const
 
 const{
   NEXT_PUBLIC_FASTAPI_URL: API_URL,
@@ -42,7 +51,16 @@ interface BankManueProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
+const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
+  const [open, setOpen] = React.useState(false)
+  const [value, setValue] = React.useState(currency)
+  // const [openDialog, setOpenDialog] = React.useState(false);
+  const [clientCurrency, setclientCurrency] = React.useState(currency);
+  
+  const updateCurrency = async (selectedCurrency: string) => {
+    setclientCurrency(selectedCurrency)
+  }
+
   const { toast } = useToast()
   const [data, setData] = useState<RowData[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -91,17 +109,11 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
 
           }
 
-          const response = await axios.post(`${API_URL}/api/transactions/`, 
-            parsedData,
-            {
-              headers: {
-                Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
-              },
-              withCredentials: true, // Ensures session are sent
-            }
-          );
-          // console.log("Server Response:", response.data);
-          await push_data(jwt)
+          console.log("name", API_URL)
+
+          const response = await send_transactions(jwt, parsedData, clientCurrency)
+          
+          // await push_data(jwt)
           
           setIsOpen(false);
           toast({
@@ -163,6 +175,12 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
                       </CardDescription> */}
                     </CardHeader>
                     <CardContent className="space-y-2">
+
+                      <div className='flex items-center justify-center'>
+                        <CurrencyMenue currencies={currencies} open={open} setOpen={setOpen} value={value} setValue={setValue} updateCurrency={updateCurrency}/>
+                      </div>
+                      
+                      
                       <div className="flex justify-center items-center space-y-1">
                         {/* Button acting as a file input */}
                         <Button
@@ -209,9 +227,6 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
                               key={bank.label}
                               target="_blank" // Open in a new tab
                               rel="noopener noreferrer" // Security for _blank
-                              // className={cn('sidebar-link', {
-                              //   'bg-financeGradient': isActive
-                              // })}
                               className='flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-full justify-center'
                             >
                               <div className='relative size-6'>
@@ -219,9 +234,6 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen }) => {
                                   src={bank.imgURL}  // Update this if you want to include an image for each bank
                                   alt={bank.label}
                                   fill
-                                  // className={cn('filter', {
-                                  //   'brightness-0 invert': isActive
-                                  // })}
                                 />
                               </div>
                               {/* <p className={cn("sidebar-label", { "!text-white": isActive })}> */}
