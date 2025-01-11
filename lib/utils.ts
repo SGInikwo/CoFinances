@@ -42,6 +42,12 @@ export const authFormSchema = (type: string) => z.object({
   }
 });
 
+interface UrlQueryParams {
+  params: string;
+  key: string;
+  value: string;
+}
+
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {
   const currentUrl = qs.parse(params);
 
