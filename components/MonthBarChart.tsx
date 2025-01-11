@@ -48,7 +48,10 @@ const MonthBarChart = ({ transactions, currency }) => {
       {
         label: 'Expenses',
         data: output,
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: '#50b545',
+        backgroundColor: '#F3FFF1',
+        borderWidth: 2,
+        borderRadius: 20,
       },
     ],
   };

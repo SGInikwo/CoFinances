@@ -10,6 +10,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
@@ -20,7 +21,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 const ExpensesCompareGraph = ({ transactions, currency }) => {
@@ -84,12 +86,16 @@ const ExpensesCompareGraph = ({ transactions, currency }) => {
       {
         label: 'Income',
         data: groupedTransactions,
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: '#50b545',
+        backgroundColor: '#50b545',
+        fill: false,
       },
       {
         label: 'Expenses',
         data: groupedTransactions2,
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: 'red',
+        backgroundColor: 'red',
+        fill: false,
       },
     ],
     labels: combinedDates,
@@ -113,6 +119,9 @@ const ExpensesCompareGraph = ({ transactions, currency }) => {
           crossAlign: 'center', // Ensure alignment relative to the axis
           maxRotation: 0, // No rotation
           minRotation: 0, // No rotation
+        },
+        grid: {
+          drawOnChartArea: false, // Disable vertical grid lines
         },
       },
       y: {

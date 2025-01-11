@@ -36,7 +36,7 @@ const Sidebar = ( {user}: SidebarProps ) => {
                 'bg-financeGradient': isActive
               })}
             >
-              <div className='relative size-6'>
+              <div className='relative size-6 cursor-pointer'>
                 <Image 
                   src={item.imgURL}
                   alt={item.label}

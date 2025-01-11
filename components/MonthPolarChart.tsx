@@ -40,20 +40,38 @@ const MonthPolarChart = ({ transactions, currency }) => {
   const labels = output.map(item => item.label); // Extract formatted dates as labels
   const dataValues = output.map(item => item.value); // Extract values for the chart
 
+  const colors = [
+    "#50b545", // Base Green
+    "#F3FFF1", // Base Light Green
+    "#74d66d", // Light Green
+    "#37a137", // Darker Green
+    "#c6f4c6", // Pastel Green
+    "#f8ffe6", // Soft Yellow-Green
+    "#b54550", // Muted Red
+    "#ff595e", // Vibrant Coral
+    "#ffe4e6", // Soft Pink
+    "#5e72b5", // Blue with Purple Hints
+    "#ffffff", // White
+    "#e6e6e6", // Light Gray
+    "#3d3d3d", // Charcoal Gray
+    "#f5e7c8", // Beige
+    "#f7b53b", // Golden Yellow
+    "#6b5cf7", // Bright Indigo
+    "#ffa500", // Vibrant Orange
+    "#87ceeb", // Sky Blue
+    "#ffd700", // Golden Yellow
+    "#a0522d", // Earthy Brown
+    "#6495ed", // Cornflower Blue
+  ];
+  
+
   const data = {
     labels, // Labels for each section of the PolarArea chart
     datasets: [
       {
         label: 'Expenses',
         data: dataValues, // Corresponding data values
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.5)',
-          'rgba(54, 162, 235, 0.5)',
-          'rgba(255, 206, 86, 0.5)',
-          'rgba(75, 192, 192, 0.5)',
-          'rgba(153, 102, 255, 0.5)',
-          'rgba(255, 159, 64, 0.5)',
-        ], // Use different colors for each section
+        backgroundColor: colors, // Use different colors for each section
       },
     ],
   };

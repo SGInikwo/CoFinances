@@ -176,7 +176,10 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
                     </CardHeader>
                     <CardContent className="space-y-2">
 
-                      <CurrencyMenue currencies={currencies} open={open} setOpen={setOpen} value={value} setValue={setValue} updateCurrency={updateCurrency}/>
+                      <div className='flex items-center justify-center'>
+                        <CurrencyMenue currencies={currencies} open={open} setOpen={setOpen} value={value} setValue={setValue} updateCurrency={updateCurrency}/>
+                      </div>
+                      
                       
                       <div className="flex justify-center items-center space-y-1">
                         {/* Button acting as a file input */}
@@ -224,9 +227,6 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
                               key={bank.label}
                               target="_blank" // Open in a new tab
                               rel="noopener noreferrer" // Security for _blank
-                              // className={cn('sidebar-link', {
-                              //   'bg-financeGradient': isActive
-                              // })}
                               className='flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-full justify-center'
                             >
                               <div className='relative size-6'>
@@ -234,9 +234,6 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
                                   src={bank.imgURL}  // Update this if you want to include an image for each bank
                                   alt={bank.label}
                                   fill
-                                  // className={cn('filter', {
-                                  //   'brightness-0 invert': isActive
-                                  // })}
                                 />
                               </div>
                               {/* <p className={cn("sidebar-label", { "!text-white": isActive })}> */}

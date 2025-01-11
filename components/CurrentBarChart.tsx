@@ -49,7 +49,10 @@ const orderedTransactions = Object.entries(groupedTransactions)
       {
         label: 'Expenses',
         data: orderedTransactions,
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: '#50b545',
+        backgroundColor: '#F3FFF1',
+        borderWidth: 2,
+        borderRadius: 20,
       },
     ],
   };
@@ -72,6 +75,9 @@ const orderedTransactions = Object.entries(groupedTransactions)
           crossAlign: 'center', // Ensure alignment relative to the axis
           maxRotation: 0, // No rotation
           minRotation: 0, // No rotation
+        },
+        grid: {
+          drawOnChartArea: false, // Disable vertical grid lines
         },
       },
       y: {
