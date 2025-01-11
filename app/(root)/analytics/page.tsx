@@ -18,6 +18,11 @@ interface PageProps {
   };
 }
 
+interface PastAnalysis {
+  last_5: Record<string, number>;
+  top_3: Record<string, number>;
+}
+
 const Analytics = async ({ searchParams }: PageProps) => {
   const { month: selectedMonth="null", year: selectedYear="null", page: currentPage=1 } = searchParams;
 
@@ -26,7 +31,7 @@ const Analytics = async ({ searchParams }: PageProps) => {
   let transactions = [];
   let summary_month = [];
   let current_analysis = [];
-  let past_analysis = []
+  let past_analysis: PastAnalysis = { last_5: {}, top_3: {} }; 
 
   if (!loggedIn) {
     notFound(); // or handle it appropriately
