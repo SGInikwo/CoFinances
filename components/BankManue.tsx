@@ -49,6 +49,7 @@ interface RowData {
 
 interface BankManueProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  currency: number | string;
 }
 
 const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {

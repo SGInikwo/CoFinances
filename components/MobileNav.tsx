@@ -82,29 +82,7 @@ const MobileNav = ({ user }: MobileNavProps) => {
             </SheetClose>
 
             <div>
-              <div className='mobileNav-sheet_close hover:bg-financeGradient hover:text-white hover:cursor-pointer'>
-                {/* Upload File */}
-                <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                  <DialogTrigger asChild>
-                    <div  className='flex gap-3 w-full h-full'>
-                      <div className='relative size-6'>
-                        <Image
-                          src="icons/upload.svg" // Replace with your image path
-                          alt="Upload File"
-                          style={{ cursor: "pointer" }}
-                          fill
-                        />
-                      </div>
-                      <p className='text-16 font-semibold text-black'>
-                        Upload
-                      </p>
-                    </div>
-                  </DialogTrigger>
-
-                  <BankManue setIsOpen={setIsOpen} />
-                  
-                </Dialog>
-              </div>
+              <TransactionsInput currency={String(user?.currency)} />
               <Footer user={user} type='mobile' />
             </div>
                   
