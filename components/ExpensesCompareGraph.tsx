@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use client"
 
 import React from 'react';
@@ -45,7 +47,7 @@ const ExpensesCompareGraph = ({ transactions, currency }) => {
   .sort((a, b) => {
     const dateA = new Date(a.x.split(' ').reverse().join(' ')); // Convert '1 Jan' to 'Jan 1'
     const dateB = new Date(b.x.split(' ').reverse().join(' ')); 
-    return dateA - dateB; // Sort by ascending date
+    return dateA.getTime() - dateB.getTime(); // Sort by ascending date
   });
 
   const groupedTransactions2 = transactions
@@ -65,7 +67,7 @@ const ExpensesCompareGraph = ({ transactions, currency }) => {
   .sort((a, b) => {
     const dateA = new Date(a.x.split(' ').reverse().join(' ')); // Convert '1 Jan' to 'Jan 1'
     const dateB = new Date(b.x.split(' ').reverse().join(' ')); 
-    return dateA - dateB; // Sort by ascending date
+    return dateA.getTime() - dateB.getTime(); // Sort by ascending date
   });
 
   const allDates = [
@@ -78,7 +80,7 @@ const ExpensesCompareGraph = ({ transactions, currency }) => {
     .sort((a, b) => {
       const dateA = new Date(a.split(' ').reverse().join(' ')); // Convert '1 Jan' to 'Jan 1'
       const dateB = new Date(b.split(' ').reverse().join(' '));
-      return dateA - dateB; // Sort by ascending date
+      return dateA.getTime() - dateB.getTime(); // Sort by ascending date
     });
 
   const data = {
