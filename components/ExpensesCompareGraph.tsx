@@ -79,11 +79,6 @@ const ExpensesCompareGraph = ({ transactions, currency }) => {
       return dateA - dateB; // Sort by ascending date
     });
 
-  console.log(groupedTransactions);
-
-  console.log(groupedTransactions2);
-  console.log(combinedDates);
-
   const data = {
     datasets: [
       {
@@ -108,7 +103,7 @@ const ExpensesCompareGraph = ({ transactions, currency }) => {
       },
       title: {
         display: true,
-        text: 'Current month expenses',
+        text: 'Income and Expenses graph',
       },
     },
     scales: {

@@ -197,6 +197,24 @@ export async function create_JWT(account?: any) {
   }
 }
 
+export async function get_all_transactionList(jwt) {
+  try {
+
+    const get_transactions = await axios.get(`${API_URL}/api/transactions/list-all`,{
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session cookies are sent
+    })
+
+    return get_transactions.data
+
+  } catch (error) {
+    console.error("Error", error);
+    return null
+  }
+}
+
 
 export async function get_transactionList(jwt, month, year) {
   try {

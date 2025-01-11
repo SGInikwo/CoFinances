@@ -13,13 +13,10 @@ const DoughnutChart = ({ transactions, currency }) => {
   }));
   const date = new Date(transactions[0].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
 
-  console.log(date)
   // Map the recipients and amounts into separate arrays
   const labels = recipientsAndAmounts.map(item => item.recipient);
   const amounts = recipientsAndAmounts.map(item => item.amount);
 
-  // console.log("Recipients:", labels);
-  // console.log("Amounts:", amounts);
 
   const data = {
     datasets: [

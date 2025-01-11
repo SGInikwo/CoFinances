@@ -67,7 +67,7 @@ const MonthPolarChart = ({ transactions, currency }) => {
       },
       title: {
         display: true,
-        text: 'Current month expenses',
+        text: 'Top 3 expenses of the last 5 month',
       },
     },
   };

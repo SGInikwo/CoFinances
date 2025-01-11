@@ -61,7 +61,7 @@ const MonthBarChart = ({ transactions, currency }) => {
       },
       title: {
         display: true,
-        text: 'Current month expenses',
+        text: 'Last 5 month expenses',
       },
     },
     scales: {
