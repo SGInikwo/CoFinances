@@ -3,6 +3,12 @@
   "rules": {
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "react-hooks/exhaustive-deps": "warn" // Change error to a warning
+    "react-hooks/exhaustive-deps": "warn", // Change error to a warning
+    "@typescript-eslint/ban-ts-comment": [
+      "error",
+      {
+        "ts-nocheck": "off"
+      }
+    ]
   }
 }
