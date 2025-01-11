@@ -27,6 +27,34 @@ export async function push_data(jwt){
   return response.data
 }
 
+export async function get_all_summary(jwt){
+  const response = await axios.get(`${API_URL}/api/summary/list`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session are sent
+    }
+  );
+  
+  return response.data
+}
+
+
+export async function get_summary_months(jwt){
+  const response = await axios.get(`${API_URL}/api/summary/months`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session are sent
+    }
+  );
+  
+  return response.data
+}
+
+
 export async function get_summary(jwt, month, year){
   const response = await axios.get(`${API_URL}/api/summary/summary-${month}-${year}`,
     {
@@ -40,18 +68,7 @@ export async function get_summary(jwt, month, year){
   return response.data
 }
 
-export async function get_all_summary(jwt){
-  const response = await axios.get(`${API_URL}/api/summary/list`,
-    {
-      headers: {
-        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
-      },
-      withCredentials: true, // Ensures session are sent
-    }
-  );
-  
-  return response.data
-}
+
 
 export async function send_transactions(jwt, parsedData, clientCurrency){
   const payload = {
@@ -86,8 +103,21 @@ export async function update_transaction_currency(jwt, clientCurrency){
   return response.data
 }
 
-export async function get_summary_months(jwt){
-  const response = await axios.get(`${API_URL}/api/summary/months`,
+export async function get_current_analysis(jwt, month, year){
+  const response = await axios.get(`${API_URL}/api/transactions/analysis-current-${month}-${year}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session are sent
+    }
+  );
+  
+  return response.data
+}
+
+export async function get_past_analysis(jwt, month, year){
+  const response = await axios.get(`${API_URL}/api/transactions/analysis-past-${month}-${year}`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header

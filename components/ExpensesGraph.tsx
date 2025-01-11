@@ -60,50 +60,6 @@ const ExpensesGraph = ({transactions, currency}) => {
       y: y,
     }));
 
- const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          usePointStyle: true,
-          pointStyle: 'circle',
-        },
-      },
-      title: {
-        display: true,
-        text: 'Expenses Over Time',
-      },
-    },
-    scales: {
-      y: {
-        max: 0,
-        reverse: true, // Invert the y-axis
-        title: {
-          display: true,
-          text: 'Expenses',
-        },
-        ticks: {
-          callback: function (value) {
-            return `${current_currency}${value}`; // Add a "£" prefix to the Y-axis labels
-          },
-        },
-      },
-      x: {
-        title: {
-          display: true,
-          text: 'Date',
-        },
-        grid: {
-          drawOnChartArea: false, // Disable vertical grid lines
-        },
-      },
-    },
-    animation: {
-      duration: 240, // Animation duration in milliseconds
-      easing: 'easeInElastic', // Adjust easing here
-    },
-  };
 
   const data = {
     datasets: [
@@ -124,9 +80,53 @@ const ExpensesGraph = ({transactions, currency}) => {
     ]
 
   };
+  const options = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Expenses Over Time',
+      },
+      legend: {
+        position: 'top',
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle',
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Date',
+        },
+        grid: {
+          drawOnChartArea: false, // Disable vertical grid lines
+        },
+      },
+      y: {
+        max: 0,
+        reverse: true, // Invert the y-axis
+        title: {
+          display: true,
+          text: 'Expenses',
+        },
+        ticks: {
+          callback: function (value) {
+            return `${current_currency}${value}`; // Add a "£" prefix to the Y-axis labels
+          },
+        },
+      },
+    },
+    animation: {
+      duration: 240, // Animation duration in milliseconds
+      easing: 'easeInElastic', // Adjust easing here
+    },
+  };
   return (
     <div>
-      <Line options={options} data={data} />
+      <Line data={data} options={options}/>
     </div>
   )
 }

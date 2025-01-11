@@ -1,0 +1,94 @@
+"use client"
+
+import React from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const MonthBarChart = ({ transactions, currency }) => {
+  const current_currency = currency === 0 ? '€' : currency === 1 ? '₩' : currency === 2 ? 'KES' : currency === 3 ? '£' : '$';
+
+  // Transform and sort the data
+  const output = Object.entries(transactions)
+  .map(([date, amount]) => {
+    // Parse the date string into a Date object (using the first day of the month)
+    const parsedDate = new Date(`${date}-01`);
+    
+    // Format the date using toLocaleDateString
+    const formattedDate = parsedDate.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' });
+    
+    return {
+      x: formattedDate,  // Formatted as 'Nov 2024' or similar
+      y: Math.abs(amount), // Use the absolute value for y
+      date: parsedDate     // Include the Date object for sorting
+    };
+  })
+  .sort((a, b) => a.date - b.date) // Sort by the Date object
+  .map(({ x, y }) => ({ x, y })); // Remove the 'date' field after sorting
+
+
+  const data = {
+    datasets: [
+      {
+        label: 'Expenses',
+        data: output,
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Current month expenses',
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          align: 'center', // Center align the labels
+          crossAlign: 'center', // Ensure alignment relative to the axis
+          maxRotation: 0, // No rotation
+          minRotation: 0, // No rotation
+        },
+      },
+      y: {
+        reverse: false,
+        ticks: {
+          callback: function (value) {
+            return `${current_currency}-${value}`; // Add currency prefix to the Y-axis labels
+          },
+        },
+      },
+    },
+  };
+
+  return (
+    <div>
+      <Bar data={data} options={options}/>
+    </div>
+  )
+}
+
+export default MonthBarChart

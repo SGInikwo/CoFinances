@@ -2,13 +2,11 @@ import CurrentBalanceBox from '@/components/CurrentBalanceBox'
 import HeaderBox from '@/components/HeaderBox'
 import TransactionTable from '@/components/TransactionTable'
 import Calendar from '@/components/Calender'
-import { get_all_summary, get_summary, get_summary_months, update_transaction_currency } from '@/lib/actions/transaction.actions'
+import { get_all_summary, get_summary, get_summary_months } from '@/lib/actions/transaction.actions'
 import { create_JWT, get_transactionList, getLoggedInUser } from '@/lib/actions/user.actions'
 import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth'
-import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import MonthCarousel from '@/components/MonthCarousel'
-import { Pagination } from '@/components/Pagination'
 import ExpensesGraph from '@/components/ExpensesGraph'
 
 interface PageProps {
@@ -129,7 +127,7 @@ const Home = async ({ searchParams }: PageProps) => {
         
         {/* Graph and Calendar */}
         <div className="flex w-full h-full gap-2 max-md:flex-col">
-          <div className="flex-[1_1_60%] border rounded-lg">
+          <div className="flex-[1_1_60%] border-gray-300 p-1 shadow-chart border rounded-3xl">
             <ExpensesGraph transactions={transactions} currency={loggedIn?.currency}/>
           </div>
           <div className="flex-[1_1_40%]">
