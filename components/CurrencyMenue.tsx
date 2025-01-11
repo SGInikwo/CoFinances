@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from '@/components/ui/popover';
 import {
   Command,
   CommandEmpty,
@@ -11,12 +11,19 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
-import { Button } from './ui/button'
-import { Check, ChevronsUpDown } from 'lucide-react'
-import { cn } from "@/lib/utils"
+} from '@/components/ui/command';
+import { Button } from './ui/button';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-const CurrencyMenue = ({currencies, open, setOpen, value, setValue, updateCurrency}) => {
+const CurrencyMenue = ({
+  currencies,
+  open,
+  setOpen,
+  value,
+  setValue,
+  updateCurrency,
+}) => {
   return (
     <div>
       <Popover open={open} onOpenChange={setOpen}>
@@ -29,7 +36,7 @@ const CurrencyMenue = ({currencies, open, setOpen, value, setValue, updateCurren
           >
             {value
               ? currencies.find((currency) => currency.value === value)?.label
-              : "Select framework..."}
+              : 'Select framework...'}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -44,22 +51,22 @@ const CurrencyMenue = ({currencies, open, setOpen, value, setValue, updateCurren
                     key={currency.value}
                     value={currency.value}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue)
-                      updateCurrency(currentValue)
-                      setOpen(false)
+                      setValue(currentValue === value ? '' : currentValue);
+                      updateCurrency(currentValue);
+                      setOpen(false);
                     }}
                     className={cn(
-                      "cursor-pointer bg-white",
-                      "hover:bg-financeSidebar", // Hover state
-                      "aria-selected:bg-financeSidebar", // Keyboard focus (overrides hover)
-                      "hover:bg-white aria-selected:hover:bg-financeSidebar"
+                      'cursor-pointer bg-white',
+                      'hover:bg-financeSidebar', // Hover state
+                      'aria-selected:bg-financeSidebar', // Keyboard focus (overrides hover)
+                      'hover:bg-white aria-selected:hover:bg-financeSidebar',
                     )}
                   >
                     {currency.label}
                     <Check
                       className={cn(
-                        "ml-auto",
-                        value === currency.value ? "opacity-100" : "opacity-0"
+                        'ml-auto',
+                        value === currency.value ? 'opacity-100' : 'opacity-0',
                       )}
                     />
                   </CommandItem>
@@ -70,7 +77,7 @@ const CurrencyMenue = ({currencies, open, setOpen, value, setValue, updateCurren
         </PopoverContent>
       </Popover>
     </div>
-  )
-}
+  );
+};
 
-export default CurrencyMenue
+export default CurrencyMenue;

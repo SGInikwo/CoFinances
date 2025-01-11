@@ -1,27 +1,26 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import Image from "next/image"
-import React, { useState } from 'react'
+import Link from 'next/link';
+import Image from 'next/image';
+import React, { useState } from 'react';
 
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
-import CustomInput from './CustomInput'
-import { authFormSchema } from '@/lib/utils'
-import { Loader2 } from 'lucide-react'
-import CustomMenue from './CustomMenue'
-import { useRouter } from 'next/navigation'
-import { signIn, signUp } from '@/lib/actions/user.actions'
-import bcrypt from 'bcryptjs'
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
+import CustomInput from './CustomInput';
+import { authFormSchema } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
+import CustomMenue from './CustomMenue';
+import { useRouter } from 'next/navigation';
+import { signIn, signUp } from '@/lib/actions/user.actions';
+import bcrypt from 'bcryptjs';
 import { useToast } from '@/hooks/use-toast';
 
-
-const AuthForm = ({ type }: {type: string}) => {
+const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [user, setuser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,16 +34,16 @@ const AuthForm = ({ type }: {type: string}) => {
       password: '',
     },
   });
- 
+
   // 2. Define a submit handler.
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
 
     try {
       // Sign Up
-      if(type === 'sign-up') {
+      if (type === 'sign-up') {
         const hash = await bcrypt.hash(data.password, 12);
-        const int_currency = Number(data.currency)
+        const int_currency = Number(data.currency);
         const newUser = await signUp({
           firstName: data.firstName,
           lastName: data.lastName,
@@ -52,158 +51,155 @@ const AuthForm = ({ type }: {type: string}) => {
           email: data.email,
           password: hash,
           confirmPassword: data.confirmPassword,
-        })
+        });
 
-        setuser(newUser)
+        setuser(newUser);
 
-        if(newUser) router.push('/')
+        if (newUser) router.push('/');
       }
       // Sign In
-      if(type === 'sign-in') {
+      if (type === 'sign-in') {
         const response = await signIn({
           email: data.email,
-          password:data.password,
-        })
+          password: data.password,
+        });
 
-        if(response) {
+        if (response) {
           toast({
-            duration:1000,
-            variant: "succes",
-            title: "Loggin succes",
-            description: "Your data is being saved.",
+            duration: 1000,
+            variant: 'succes',
+            title: 'Loggin succes',
+            description: 'Your data is being saved.',
           });
-          router.push('/')
+          router.push('/');
         } else {
           toast({
-            duration:3000,
-            variant: "destructive",
-            title: "Email and Password combination incorrect",
-            description: "There was a problem with your request.",
+            duration: 3000,
+            variant: 'destructive',
+            title: 'Email and Password combination incorrect',
+            description: 'There was a problem with your request.',
           });
-
         }
-
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <section className='auth-form'>
-      <header className='flex flex-col gap-5 md:gap-8'>
-        <Link href='/' className='cursor-pointer flex items-center gap-1'>
-              <Image
-                src='/icons/logo.svg'
-                width={38}
-                height={38}
-                alt='s Logo'
+    <section className="auth-form">
+      <header className="flex flex-col gap-5 md:gap-8">
+        <Link href="/" className="cursor-pointer flex items-center gap-1">
+          <Image src="/icons/logo.svg" width={38} height={38} alt="s Logo" />
+          <h1 className="text-26 font-avro font-semibold text-black">
+            CoFinances
+          </h1>
+        </Link>
+
+        <div className="flex flex-col gap-1 md:gap-3">
+          <h1 className="text-24 lg:text-36 font-semibold text-gray-900">
+            {user ? 'Link Account' : type === 'sign-in' ? 'Sign In' : 'Sign Up'}
+            <p className="text-16 font-normal text-gray-600">
+              {user
+                ? 'Link your account to get started'
+                : 'Please enter your details'}
+            </p>
+          </h1>
+        </div>
+      </header>
+
+      {user ? (
+        <div className="flex flex-col gap-4">{/* we'll see */}</div>
+      ) : (
+        <>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              {type === 'sign-up' && (
+                <>
+                  <CustomInput
+                    control={form.control}
+                    name="firstName"
+                    label="First Name"
+                    placeholder="Enter your First Name"
+                  />
+
+                  <CustomInput
+                    control={form.control}
+                    name="lastName"
+                    label="Last Name"
+                    placeholder="Enter your Last Name"
+                  />
+
+                  <CustomMenue
+                    control={form.control}
+                    setValue={form.setValue}
+                    name="currency"
+                    label="Currency"
+                    placeholder="Select Currency"
+                  />
+                </>
+              )}
+
+              <CustomInput
+                control={form.control}
+                name="email"
+                label="Email"
+                placeholder="Enter your email"
               />
-              <h1 className='text-26 font-avro font-semibold text-black'>CoFinances</h1>
+              <CustomInput
+                control={form.control}
+                name="password"
+                label="Password"
+                placeholder="Enter your password"
+              />
+
+              {type === 'sign-up' && (
+                <>
+                  <CustomInput
+                    control={form.control}
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    placeholder="Enter your Confirm Password"
+                  />
+                </>
+              )}
+
+              <div className="flex flex-col gap-4">
+                <Button type="submit" disabled={isLoading} className="form-btn">
+                  {isLoading ? (
+                    <>
+                      <Loader2 size={20} className="animate-spin" /> &nbsp;
+                      Loading...
+                    </>
+                  ) : type === 'sign-in' ? (
+                    'Sign In'
+                  ) : (
+                    'Sign Up'
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+
+          <footer className="flex justify-center gap-1">
+            <p className="text-14 font-normal text-gray-600">
+              {type === 'sign-in'
+                ? "Don't have an account?"
+                : 'Already have an account?'}
+            </p>
+            <Link
+              href={type === 'sign-in' ? '/sign-up' : '/sign-in'}
+              className="form-link"
+            >
+              {type === 'sign-in' ? 'Sign Up' : 'Sign In'}
             </Link>
-
-            <div className='flex flex-col gap-1 md:gap-3'>
-              <h1 className='text-24 lg:text-36 font-semibold text-gray-900'>
-                {user ? 'Link Account' : type === 'sign-in' ? 'Sign In' : 'Sign Up'}
-                <p className='text-16 font-normal text-gray-600'>
-                  {user ? 'Link your account to get started' : 'Please enter your details'}
-                </p>
-              </h1>
-            </div>
-        </header>
-
-        {user ? (
-          <div className='flex flex-col gap-4'>
-            {/* we'll see */}
-          </div>
-        ) : (
-          <>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                {type === 'sign-up' && (
-                  <>
-                    <CustomInput 
-                      control={form.control}
-                      name='firstName'
-                      label='First Name'
-                      placeholder='Enter your First Name'
-                    />
-
-                    <CustomInput 
-                      control={form.control}
-                      name='lastName'
-                      label='Last Name'
-                      placeholder='Enter your Last Name'
-                    />
-
-
-                    <CustomMenue 
-                      control={form.control}
-                      setValue={form.setValue}
-                      name='currency'
-                      label='Currency'
-                      placeholder='Select Currency'
-                    />
-                  </>
-                )}
-
-                <CustomInput 
-                  control={form.control}
-                  name='email'
-                  label='Email'
-                  placeholder='Enter your email'
-                />
-                <CustomInput 
-                  control={form.control}
-                  name='password'
-                  label='Password'
-                  placeholder='Enter your password'
-                />
-                
-                {type === 'sign-up' && (
-                  <>
-                    <CustomInput 
-                      control={form.control}
-                      name='confirmPassword'
-                      label='Confirm Password'
-                      placeholder='Enter your Confirm Password'
-                    />
-
-                  </>
-                )}
-                
-                <div className='flex flex-col gap-4'>
-                  <Button type="submit" disabled={isLoading} className='form-btn'>
-                    {isLoading ? (
-                      <>
-                        <Loader2 size={20} className='animate-spin'/> &nbsp;
-                        Loading...
-                      </>
-                    ) : type === 'sign-in' ? 'Sign In' : 'Sign Up'}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-
-            <footer className='flex justify-center gap-1'>
-              <p className='text-14 font-normal text-gray-600'>
-                {
-                  type === 'sign-in'
-                  ? "Don't have an account?"
-                  : "Already have an account?"
-                }
-              </p>
-              <Link href={type === 'sign-in' ? '/sign-up' : '/sign-in'} className='form-link'>
-                {type === 'sign-in' ? 'Sign Up' : 'Sign In'}
-              </Link>
-            </footer>
-          </>
-        )}
-
+          </footer>
+        </>
+      )}
     </section>
-  )
-}
+  );
+};
 
-export default AuthForm
+export default AuthForm;

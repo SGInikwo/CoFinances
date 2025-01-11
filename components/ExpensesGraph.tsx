@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-"use client"
+'use client';
 
 import React from 'react';
 import {
@@ -16,7 +16,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -25,18 +24,27 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
-const ExpensesGraph = ({transactions, currency}) => {
-  const current_currency = currency === 0 ? '€' : currency === 1 ? '₩' : currency === 2 ? 'KES' : currency === 3 ? '£' : '$';
-   // Group transactions by date and sum their amounts
+const ExpensesGraph = ({ transactions, currency }) => {
+  const current_currency =
+    currency === 0
+      ? '€'
+      : currency === 1
+        ? '₩'
+        : currency === 2
+          ? 'KES'
+          : currency === 3
+            ? '£'
+            : '$';
+  // Group transactions by date and sum their amounts
   const groupedData = transactions
-    .filter(transaction => {
+    .filter((transaction) => {
       const amount = parseFloat(transaction.amount);
       // Include only if the amount is negative and recipient doesn't contain "Revolut"
       // return amount < 0 && !transaction.recipient.includes('Revolut');
-      return amount < 0
+      return amount < 0;
     })
     .reduce((acc, transaction) => {
       const date = transaction.date;
@@ -62,7 +70,6 @@ const ExpensesGraph = ({transactions, currency}) => {
       y: y,
     }));
 
-
   const data = {
     datasets: [
       {
@@ -71,16 +78,20 @@ const ExpensesGraph = ({transactions, currency}) => {
         tension: 0.3,
         fill: true,
         borderColor: '#50b545',
-        backgroundColor: context => {
+        backgroundColor: (context) => {
           const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, context.chart.height);
+          const gradient = ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            context.chart.height,
+          );
           gradient.addColorStop(0, '#50b545'); // Green with opacity
           gradient.addColorStop(1, 'rgba(80, 181, 69, 0)'); // Fully transparent green
           return gradient;
         },
-      }
-    ]
-
+      },
+    ],
   };
   const options = {
     responsive: true,
@@ -128,9 +139,9 @@ const ExpensesGraph = ({transactions, currency}) => {
   };
   return (
     <div>
-      <Line data={data} options={options}/>
+      <Line data={data} options={options} />
     </div>
-  )
-}
+  );
+};
 
-export default ExpensesGraph
+export default ExpensesGraph;

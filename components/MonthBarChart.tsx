@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-"use client"
+'use client';
 
 import React from 'react';
 import {
@@ -20,30 +20,41 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const MonthBarChart = ({ transactions, currency }) => {
-  const current_currency = currency === 0 ? '€' : currency === 1 ? '₩' : currency === 2 ? 'KES' : currency === 3 ? '£' : '$';
+  const current_currency =
+    currency === 0
+      ? '€'
+      : currency === 1
+        ? '₩'
+        : currency === 2
+          ? 'KES'
+          : currency === 3
+            ? '£'
+            : '$';
 
   // Transform and sort the data
   const output = Object.entries(transactions)
-  .map(([date, amount]) => {
-    // Parse the date string into a Date object (using the first day of the month)
-    const parsedDate = new Date(`${date}-01`);
-    
-    // Format the date using toLocaleDateString
-    const formattedDate = parsedDate.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' });
-    
-    return {
-      x: formattedDate,  // Formatted as 'Nov 2024' or similar
-      y: Math.abs(amount), // Use the absolute value for y
-      date: parsedDate     // Include the Date object for sorting
-    };
-  })
-  .sort((a, b) => a.date - b.date) // Sort by the Date object
-  .map(({ x, y }) => ({ x, y })); // Remove the 'date' field after sorting
+    .map(([date, amount]) => {
+      // Parse the date string into a Date object (using the first day of the month)
+      const parsedDate = new Date(`${date}-01`);
 
+      // Format the date using toLocaleDateString
+      const formattedDate = parsedDate.toLocaleDateString('en-GB', {
+        year: 'numeric',
+        month: 'short',
+      });
+
+      return {
+        x: formattedDate, // Formatted as 'Nov 2024' or similar
+        y: Math.abs(amount), // Use the absolute value for y
+        date: parsedDate, // Include the Date object for sorting
+      };
+    })
+    .sort((a, b) => a.date - b.date) // Sort by the Date object
+    .map(({ x, y }) => ({ x, y })); // Remove the 'date' field after sorting
 
   const data = {
     datasets: [
@@ -91,9 +102,9 @@ const MonthBarChart = ({ transactions, currency }) => {
 
   return (
     <div>
-      <Bar data={data} options={options}/>
+      <Bar data={data} options={options} />
     </div>
-  )
-}
+  );
+};
 
-export default MonthBarChart
+export default MonthBarChart;

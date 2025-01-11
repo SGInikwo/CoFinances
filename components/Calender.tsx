@@ -1,12 +1,27 @@
 'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "./ui/button";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Button } from './ui/button';
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from 'lucide-react';
 
 const months = [
-  "January", "February", "March", "April", "May", "June", "July", "August",
-  "September", "October", "November", "December",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 const Calendar = ({ summaries, currency }) => {
@@ -48,14 +63,16 @@ const Calendar = ({ summaries, currency }) => {
   // Filter summaries for the current month and year
   const filteredSummaries = summaries.filter((summary) => {
     const summaryDate = new Date(summary.date);
-    return summaryDate.getMonth() === month && summaryDate.getFullYear() === year;
+    return (
+      summaryDate.getMonth() === month && summaryDate.getFullYear() === year
+    );
   });
 
   // Summing up the amounts for each day
   const summedAmounts = filteredSummaries.reduce((acc, summary) => {
     const { day, amount } = summary;
     const amountValue = parseFloat(amount);
-    
+
     // Accumulate the amount for each day
     if (!acc[day]) {
       acc[day] = 0;
@@ -109,7 +126,7 @@ const Calendar = ({ summaries, currency }) => {
 
         {/* Weekdays */}
         <div className="grid grid-cols-7 text-center font-semibold text-gray-700 border-b">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
             <div key={day} className="py-2">
               {day}
             </div>
@@ -148,22 +165,20 @@ const Calendar = ({ summaries, currency }) => {
                 onClick={() => handleDayClick(day)}
                 className={`px-1 cursor-pointer h-12 ${
                   isToday && activeDay === day && currentMonth === month
-                    ? "bg-financeSidebar border border-financeGradient text-gray-700"
+                    ? 'bg-financeSidebar border border-financeGradient text-gray-700'
                     : isToday
-                    ? "border border-financeGradient"
-                    : activeDay === day
-                    ? "bg-financeSidebar text-gray-700"
-                    : "text-gray-700 hover:bg-financeSidebar"
+                      ? 'border border-financeGradient'
+                      : activeDay === day
+                        ? 'bg-financeSidebar text-gray-700'
+                        : 'text-gray-700 hover:bg-financeSidebar'
                 }`}
               >
-                <p className="text-center text-[12px]">
-                  {day}
-                </p>
+                <p className="text-center text-[12px]">{day}</p>
                 {/* Only show sum if it is non-zero */}
                 {summedAmount !== 0 && (
                   <div
                     className={`text-[12px] text-center mt-1 ${
-                      isPositive ? "text-green-600" : "text-red-600"  // Green for positive, Red for negative
+                      isPositive ? 'text-green-600' : 'text-red-600' // Green for positive, Red for negative
                     }`}
                   >
                     {displayAmount}
@@ -176,9 +191,7 @@ const Calendar = ({ summaries, currency }) => {
           {/* Next Month Days */}
           {Array.from({ length: nextDays }).map((_, i) => (
             <div key={`next-${i}`} className="text-gray-400 text-center px-1">
-              <p className="text-center text-[12px]">
-                {i + 1}
-              </p>
+              <p className="text-center text-[12px]">{i + 1}</p>
             </div>
           ))}
         </div>

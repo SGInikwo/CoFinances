@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Table,
@@ -7,12 +7,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { convert_currency } from "@/lib/actions/transaction.actions";
-import { formatAmount } from "@/lib/utils"
-import { useEffect, useState } from "react";
-import { number } from "zod"
-import { Pagination } from "./Pagination";
+} from '@/components/ui/table';
+import { convert_currency } from '@/lib/actions/transaction.actions';
+import { formatAmount } from '@/lib/utils';
+import { useEffect, useState } from 'react';
+import { number } from 'zod';
+import { Pagination } from './Pagination';
 
 interface Transaction {
   id: string;
@@ -32,7 +32,12 @@ interface TransactionTableProps {
   rowPerPage: number;
 }
 
-const TransactionTable = ( {transactions, currency, page=1, rowPerPage=10}: TransactionTableProps ) => {
+const TransactionTable = ({
+  transactions,
+  currency,
+  page = 1,
+  rowPerPage = 10,
+}: TransactionTableProps) => {
   // const [convertedTransactions, setConvertedTransactions] = useState<
   //   (Transaction & { convertedAmount: string })[]
   // >([]);
@@ -42,7 +47,6 @@ const TransactionTable = ( {transactions, currency, page=1, rowPerPage=10}: Tran
 
   const indexOfLastTransaction = page * rowsPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
-
 
   // useEffect(() => {
   //   const fetchConvertedTransactions = async () => {
@@ -58,13 +62,13 @@ const TransactionTable = ( {transactions, currency, page=1, rowPerPage=10}: Tran
 
   //   fetchConvertedTransactions();
   // }, [transactions]);
-  
+
   // const latestTenTransactions = convertedTransactions.slice(0, 10);
 
   const currentTransactions = transactions.slice(
-    indexOfFirstTransaction, indexOfLastTransaction
-  )
-
+    indexOfFirstTransaction,
+    indexOfLastTransaction,
+  );
 
   return (
     <div>
@@ -81,42 +85,30 @@ const TransactionTable = ( {transactions, currency, page=1, rowPerPage=10}: Tran
         <TableBody>
           {currentTransactions.map((t) => {
             const convertedAmount = formatAmount(Number(t.amount), currency);
-            return(
+            return (
               <TableRow key={t.id}>
-              <TableCell>
-                <div>
-                  <h1>
-                    {t.recipient}
-                  </h1>
-                </div>
-              </TableCell>
+                <TableCell>
+                  <div>
+                    <h1>{t.recipient}</h1>
+                  </div>
+                </TableCell>
 
-              <TableCell>
-                {convertedAmount}
-              </TableCell>
+                <TableCell>{convertedAmount}</TableCell>
 
-              <TableCell>
-                {t.transactionType}
-              </TableCell>
+                <TableCell>{t.transactionType}</TableCell>
 
-              <TableCell>
-                {t.icon}
-              </TableCell>
-              
-              <TableCell>
-                {t.date}
-              </TableCell>
-            </TableRow>
-            )
+                <TableCell>{t.icon}</TableCell>
+
+                <TableCell>{t.date}</TableCell>
+              </TableRow>
+            );
           })}
         </TableBody>
       </Table>
 
       <Pagination page={page} totalPages={totalPages} />
     </div>
-    
+  );
+};
 
-  )
-}
-
-export default TransactionTable
+export default TransactionTable;

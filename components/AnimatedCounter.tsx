@@ -3,18 +3,27 @@
 import React from 'react';
 import CountUp from 'react-countup';
 
-const AnimatedCounter = ({ amount, currency }: { amount: number, currency: string }) => {
+const AnimatedCounter = ({
+  amount,
+  currency,
+}: {
+  amount: number;
+  currency: string;
+}) => {
   const formatValue = (value: number) => {
     // Format the number with 2 decimal places (or 0 for ₩) and use comma as the decimal separator
     const formattedValue = value.toLocaleString('nl-NL', {
       minimumFractionDigits: currency === '₩' ? 0 : 2,
       maximumFractionDigits: currency === '₩' ? 0 : 2,
     });
-    if (currency === "%"){
-      return  value < 0 ? `${formattedValue}${currency}` : `${formattedValue}${currency}`;
+    if (currency === '%') {
+      return value < 0
+        ? `${formattedValue}${currency}`
+        : `${formattedValue}${currency}`;
     }
-    return  value < 0 ? `${currency}${formattedValue}` : `${currency}${formattedValue}`;
-    
+    return value < 0
+      ? `${currency}${formattedValue}`
+      : `${currency}${formattedValue}`;
   };
 
   return (

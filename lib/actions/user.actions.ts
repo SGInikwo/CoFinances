@@ -1,18 +1,24 @@
-'use server'
+'use server';
 
-import { ID, Query, Permission, Role } from "node-appwrite"
-import { createAdminClient, createSessionClient } from "../appwrite"
-import { cookies } from "next/headers"
-import { parseStringify } from "../utils"
-import bcrypt from 'bcryptjs'
-import { delete_jwt, get_cookie, initiate_jwt, isJWTExpired, send_jwt } from "../auth"
-import axios from "axios"
+import { ID, Query, Permission, Role } from 'node-appwrite';
+import { createAdminClient, createSessionClient } from '../appwrite';
+import { cookies } from 'next/headers';
+import { parseStringify } from '../utils';
+import bcrypt from 'bcryptjs';
+import {
+  delete_jwt,
+  get_cookie,
+  initiate_jwt,
+  isJWTExpired,
+  send_jwt,
+} from '../auth';
+import axios from 'axios';
 
-const{
+const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
   NEXT_PUBLIC_FASTAPI_URL: API_URL,
-} = process.env
+} = process.env;
 
 export const getUserInfo = async ({ userId }: getUserInfoProps) => {
   try {
@@ -21,16 +27,20 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
     const user = await database.listDocuments(
       DATABASE_ID!,
       USER_COLLECTION_ID!,
-      [Query.equal('userId', [userId])]
-    )
+      [Query.equal('userId', [userId])],
+    );
 
     return parseStringify(user.documents[0]);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
-export const updateuserCurrency = async ({ newCurrency }: { newCurrency: string }) => {
+export const updateuserCurrency = async ({
+  newCurrency,
+}: {
+  newCurrency: string;
+}) => {
   const { account, database } = await createAdminClient();
   const user = await getLoggedInUser();
 
@@ -38,7 +48,11 @@ export const updateuserCurrency = async ({ newCurrency }: { newCurrency: string 
   const newCurrencyNumber = Number(newCurrency);
 
   // Fetch the current user document
-  const currentUser = await database.getDocument(DATABASE_ID!, USER_COLLECTION_ID!, user.$id);
+  const currentUser = await database.getDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    user.$id,
+  );
 
   // Remove internal fields like $databaseId
   const { $databaseId, $collectionId, ...userData } = currentUser;
@@ -52,12 +66,12 @@ export const updateuserCurrency = async ({ newCurrency }: { newCurrency: string 
     user.$id,
     {
       ...userData,
-      currency: newCurrencyNumber // Update currency field
+      currency: newCurrencyNumber, // Update currency field
     },
   );
 
   return parseStringify(updatedUser); // Returning the updated document
-}
+};
 
 export const signIn = async ({ email, password }: signInProps) => {
   try {
@@ -66,49 +80,54 @@ export const signIn = async ({ email, password }: signInProps) => {
     const user = await database.listDocuments(
       DATABASE_ID!,
       USER_COLLECTION_ID!,
-      [Query.equal('email', [email])]
-    )
+      [Query.equal('email', [email])],
+    );
 
-    const databasePassword = user.documents[0]["password"]
-    const databaseAuthLevel = user.documents[0]["authLevel"]
+    const databasePassword = user.documents[0]['password'];
+    const databaseAuthLevel = user.documents[0]['authLevel'];
 
-    const isMatch = await bcrypt.compare(password, databasePassword)
+    const isMatch = await bcrypt.compare(password, databasePassword);
 
-    if(isMatch && databaseAuthLevel === -1){
-      const session = await account.createEmailPasswordSession(email, databasePassword);
-    
+    if (isMatch && databaseAuthLevel === -1) {
+      const session = await account.createEmailPasswordSession(
+        email,
+        databasePassword,
+      );
+
       // Check for existing `appwrite-session` cookie
-      const existingSessionCookie = cookies().get("appwrite-session");
+      const existingSessionCookie = cookies().get('appwrite-session');
 
       if (!existingSessionCookie) {
         // Set `appwrite-session` cookie if not already set
-        cookies().set("appwrite-session", session.secret, {
-          path: "/",
+        cookies().set('appwrite-session', session.secret, {
+          path: '/',
           httpOnly: true,
-          sameSite: "strict",
+          sameSite: 'strict',
           secure: true,
         });
-      } 
+      }
 
       const user = await getUserInfo({ userId: session.userId });
 
-      const jwt = await create_JWT()
+      const jwt = await create_JWT();
 
-      await initiate_jwt(jwt)
+      await initiate_jwt(jwt);
 
       return parseStringify(user);
-    } else{
-      console.error("Error Logging in")
-      return null
+    } else {
+      console.error('Error Logging in');
+      return null;
     }
-
   } catch (error) {
-    console.error("Error", error)
-    return null
+    console.error('Error', error);
+    return null;
   }
-}
+};
 
-export const signUp = async ({ confirmPassword, ...userData}: SignUpParams) => {
+export const signUp = async ({
+  confirmPassword,
+  ...userData
+}: SignUpParams) => {
   const { email, password, firstName, lastName, currency } = userData;
 
   let newUserAccount;
@@ -116,15 +135,16 @@ export const signUp = async ({ confirmPassword, ...userData}: SignUpParams) => {
   try {
     const { account, database } = await createAdminClient();
 
-    const id = ID.unique()
+    const id = ID.unique();
 
-    newUserAccount =  await account.create(
-      id, 
-      email, password, 
-      `${firstName} ${lastName}`
+    newUserAccount = await account.create(
+      id,
+      email,
+      password,
+      `${firstName} ${lastName}`,
     );
 
-    if(!newUserAccount) throw new Error('Error creating user');
+    if (!newUserAccount) throw new Error('Error creating user');
 
     const newUser = await database.createDocument(
       DATABASE_ID!,
@@ -135,29 +155,27 @@ export const signUp = async ({ confirmPassword, ...userData}: SignUpParams) => {
         userId: newUserAccount.$id,
         authLevel: 1,
       },
-      [
-        Permission.read(Role.user(newUserAccount.$id))
-      ]
+      [Permission.read(Role.user(newUserAccount.$id))],
     );
 
-    await create_JWT()
+    await create_JWT();
 
     return parseStringify(newUser);
   } catch (error) {
-    console.error("Error", error);
+    console.error('Error', error);
   }
-}
+};
 
 export async function getLoggedInUser() {
   try {
     const { account } = await createSessionClient();
     const result = await account.get();
 
-    const user = await getUserInfo({ userId: result.$id })
+    const user = await getUserInfo({ userId: result.$id });
 
     return parseStringify(user);
   } catch (error) {
-    console.error("Error", error);
+    console.error('Error', error);
     return null;
   }
 }
@@ -166,19 +184,19 @@ export const logoutAccount = async () => {
   try {
     const user = await getLoggedInUser();
 
-    await delete_jwt(user["$id"]);
+    await delete_jwt(user['$id']);
 
     const { account } = await createSessionClient();
 
-    await account.deleteSession('current')
+    await account.deleteSession('current');
 
     cookies().delete('appwrite-session');
 
-    return true
+    return true;
   } catch (error) {
-    console.error("Error", error);
+    console.error('Error', error);
   }
-}
+};
 
 export async function create_JWT(account?: any) {
   try {
@@ -191,45 +209,45 @@ export async function create_JWT(account?: any) {
     const jwt = jwtResponse.jwt;
 
     return jwt;
-
   } catch (error) {
-    console.error("Error", error);
+    console.error('Error', error);
   }
 }
 
 export async function get_all_transactionList(jwt) {
   try {
-
-    const get_transactions = await axios.get(`${API_URL}/api/transactions/list-all`,{
-      headers: {
-        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+    const get_transactions = await axios.get(
+      `${API_URL}/api/transactions/list-all`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+        },
+        withCredentials: true, // Ensures session cookies are sent
       },
-      withCredentials: true, // Ensures session cookies are sent
-    })
+    );
 
-    return get_transactions.data
-
+    return get_transactions.data;
   } catch (error) {
-    console.error("Error", error);
-    return null
+    console.error('Error', error);
+    return null;
   }
 }
 
-
 export async function get_transactionList(jwt, month, year) {
   try {
-
-    const get_transactions = await axios.get(`${API_URL}/api/transactions/list-${month}-${year}`,{
-      headers: {
-        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+    const get_transactions = await axios.get(
+      `${API_URL}/api/transactions/list-${month}-${year}`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+        },
+        withCredentials: true, // Ensures session cookies are sent
       },
-      withCredentials: true, // Ensures session cookies are sent
-    })
+    );
 
-    return get_transactions.data
-
+    return get_transactions.data;
   } catch (error) {
-    console.error("Error", error);
-    return null
+    console.error('Error', error);
+    return null;
   }
 }

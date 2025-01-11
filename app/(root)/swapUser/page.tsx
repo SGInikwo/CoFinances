@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const Swap = () => {
-  return (
-    <div>
-      Swap page, In progress
-    </div>
-  )
-}
+  return <div>Swap page, In progress</div>;
+};
 
-export default Swap
+export default Swap;
