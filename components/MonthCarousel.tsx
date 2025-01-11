@@ -1,16 +1,16 @@
 // @ts-nocheck
 
-"use client";
+'use client';
 
-import React, { useState, useRef, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import React, { useState, useRef, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from '@/components/ui/carousel';
 
 const MonthCarousel = ({ months = [], selectedMonth, selectedYear }) => {
   // Ensure months is always an array
@@ -22,9 +22,13 @@ const MonthCarousel = ({ months = [], selectedMonth, selectedYear }) => {
     if (reversedMonths.length === 0) return 0; // Handle empty months
     if (selectedMonth) {
       const foundMonth = reversedMonths.find(
-        (monthObj) => monthObj.month === selectedMonth && monthObj.year === Number(selectedYear)
+        (monthObj) =>
+          monthObj.month === selectedMonth &&
+          monthObj.year === Number(selectedYear),
       );
-      return foundMonth ? reversedMonths.indexOf(foundMonth) : reversedMonths.length - 1;
+      return foundMonth
+        ? reversedMonths.indexOf(foundMonth)
+        : reversedMonths.length - 1;
     }
     return reversedMonths.length - 1; // Default to last month
   };
@@ -49,17 +53,21 @@ const MonthCarousel = ({ months = [], selectedMonth, selectedYear }) => {
   const handleMonthSelect = (month) => {
     if (!month) return; // Handle empty months
     const url = new URL(window.location.href);
-    url.searchParams.set("month", month.month); // Update the URL with the selected month
-    url.searchParams.set("year", month.year); // Update the URL with the selected month
-    window.history.pushState({}, "", url); // Update the URL without reloading the page
+    url.searchParams.set('month', month.month); // Update the URL with the selected month
+    url.searchParams.set('year', month.year); // Update the URL with the selected month
+    window.history.pushState({}, '', url); // Update the URL without reloading the page
     window.location.reload();
   };
 
   useEffect(() => {
-    const items = carouselRef.current?.querySelectorAll("[data-carousel-item]");
+    const items = carouselRef.current?.querySelectorAll('[data-carousel-item]');
     if (items && items.length > 0 && currentIndex < items.length) {
       const currentItem = items[currentIndex];
-      currentItem?.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" });
+      currentItem?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+        inline: 'end',
+      });
     }
   }, [currentIndex]);
 
@@ -80,15 +88,23 @@ const MonthCarousel = ({ months = [], selectedMonth, selectedYear }) => {
               <div>
                 <Card>
                   <CardContent className="flex items-center justify-center p-1">
-                    <span className="font-bold">{monthObj.month} {monthObj.year}</span>
+                    <span className="font-bold">
+                      {monthObj.month} {monthObj.year}
+                    </span>
                   </CardContent>
                 </Card>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious onClick={handlePrevious} disabled={currentIndex === 0} />
-        <CarouselNext onClick={handleNext} disabled={currentIndex === reversedMonths.length - 1} />
+        <CarouselPrevious
+          onClick={handlePrevious}
+          disabled={currentIndex === 0}
+        />
+        <CarouselNext
+          onClick={handleNext}
+          disabled={currentIndex === reversedMonths.length - 1}
+        />
       </Carousel>
     </div>
   );

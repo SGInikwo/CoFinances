@@ -24,10 +24,10 @@ declare type User = {
   lastName: string;
   name: string;
   currency: string;
-}
+};
 
 declare interface HeaderBoxProps {
-  type?: "title" | "greeting";
+  type?: 'title' | 'greeting';
   title: string;
   subtext: string;
   user?: string;
@@ -54,19 +54,19 @@ declare interface MobileNavProps {
 
 declare interface FooterProps {
   user: User;
-  type?: 'mobile' | 'desktop'
+  type?: 'mobile' | 'desktop';
 }
 
 declare interface getUserInfoProps {
   userId: string;
 }
 
-declare interface Transaction{
+declare interface Transaction {
   id: string;
   userId: string;
   date: string;
   recipient: string;
-  currency: int
+  currency: int;
   amount: string;
   transactionType: string;
   transactionDetails: string;
@@ -79,7 +79,6 @@ declare interface Transaction{
   // $databaseId: string;
   // $collectionId: string;
 }
-  
 
 declare interface TransactionTableProps {
   transactions: Transaction[];

@@ -1,70 +1,76 @@
-'use client'
+'use client';
 
-import { sidebarLinks } from '@/constants'
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import React from 'react'
-import Footer from './Footer'
-import TransactionsInput from './TransactionsInput'
+import { sidebarLinks } from '@/constants';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React from 'react';
+import Footer from './Footer';
+import TransactionsInput from './TransactionsInput';
 
-const Sidebar = ( {user}: SidebarProps ) => {
+const Sidebar = ({ user }: SidebarProps) => {
   const pathName = usePathname();
 
   return (
-    <section className='sidebar bg-financeSidebar'>
-      <nav className='flex flex-col gap-4'>
-        <Link href='/' className='mb-12 cursor-pointer flex items-center gap-2'>
+    <section className="sidebar bg-financeSidebar">
+      <nav className="flex flex-col gap-4">
+        <Link href="/" className="mb-12 cursor-pointer flex items-center gap-2">
           <Image
-            src='/icons/logo.svg'
+            src="/icons/logo.svg"
             width={34}
             height={34}
-            alt='CoFinances Logo'
-            className='size-[36px] max-xl:size-14'
+            alt="CoFinances Logo"
+            className="size-[36px] max-xl:size-14"
           />
-          <h1 className='sidebar-logo'>CoFinances</h1>
+          <h1 className="sidebar-logo">CoFinances</h1>
         </Link>
 
         {sidebarLinks.map((item) => {
-          const isActive = pathName === item.route || pathName.startsWith(`${item.route}/`);
+          const isActive =
+            pathName === item.route || pathName.startsWith(`${item.route}/`);
           return (
-            <Link 
-              href={item.route} 
+            <Link
+              href={item.route}
               key={item.label}
               className={cn('sidebar-link', {
-                'bg-financeGradient': isActive
+                'bg-financeGradient': isActive,
               })}
             >
-              <div className='relative size-6 cursor-pointer'>
-                <Image 
+              <div className="relative size-6 cursor-pointer">
+                <Image
                   src={item.imgURL}
                   alt={item.label}
                   fill
                   className={cn('filter', {
-                    'brightness-0 invert': isActive
+                    'brightness-0 invert': isActive,
                   })}
                 />
               </div>
-              <p className={cn("sidebar-label w-full h-full", { "!text-white": isActive }, {'hover:text-financeGradient': !isActive})}>
+              <p
+                className={cn(
+                  'sidebar-label w-full h-full',
+                  { '!text-white': isActive },
+                  { 'hover:text-financeGradient': !isActive },
+                )}
+              >
                 {item.label}
-              </p>  
+              </p>
             </Link>
-          )
+          );
         })}
       </nav>
       <div>
         <TransactionsInput currency={String(user?.currency)} />
         <Footer user={user} />
       </div>
-      
     </section>
-  )
-}
+  );
+};
 
 <style jsx global>{`
   .custom-brightness {
     filter: brightness(3);
   }
-`}</style>
-export default Sidebar
+`}</style>;
+export default Sidebar;
