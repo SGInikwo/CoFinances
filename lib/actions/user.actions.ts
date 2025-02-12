@@ -5,7 +5,7 @@ import { createAdminClient, createSessionClient } from '../appwrite';
 import { cookies } from 'next/headers';
 import { parseStringify } from '../utils';
 import bcrypt from 'bcryptjs';
-import { delete_jwt, initiate_jwt } from '../auth';
+import { delete_jwt, get_jwt, initiate_jwt, isJWTExpired, send_jwt } from '../auth';
 import axios from 'axios';
 
 const {
@@ -163,7 +163,15 @@ export const logoutAccount = async () => {
       await swapLogout();
     }
 
-    await delete_jwt(user['$id']);
+    let jwt = await get_jwt(user.$id);
+
+    if (await isJWTExpired(jwt)) {
+      jwt = await create_JWT();
+      await send_jwt(jwt);
+      jwt = await get_jwt(user.$id);
+    }
+
+    await delete_jwt(jwt, user['$id']);
 
     const { account } = await createSessionClient();
 

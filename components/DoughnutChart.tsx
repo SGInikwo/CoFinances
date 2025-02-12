@@ -6,12 +6,15 @@ import { Doughnut } from 'react-chartjs-2';
 ChartJS.register(ArcElement, Tooltip, Title, Legend);
 
 const DoughnutChart = ({ transactions, currency }) => {
+  if (!Array.isArray(transactions) || transactions.length === 0) {
+    return <p>No transaction data available.</p>; // Handle empty transactions gracefully
+  }
   // Extract recipients and amounts from transactions
   const recipientsAndAmounts = transactions.map((item) => ({
     recipient: item.recipient,
     amount: item.amount, // Use absolute values for chart data
   }));
-  const date = new Date(transactions[0].date).toLocaleDateString('en-GB', {
+  const date = new Date(transactions[0]?.date).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
   });
