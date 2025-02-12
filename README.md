@@ -12,6 +12,10 @@ yarn dev
 pnpm dev
 # or
 bun dev
+# or
+npm run lint
+# or
+npm run format
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
