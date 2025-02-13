@@ -15,6 +15,10 @@ import { PolarArea } from 'react-chartjs-2';
 ChartJS.register(RadialLinearScale, ArcElement, Tooltip, Legend);
 
 const MonthPolarChart = ({ transactions, currency }) => {
+  if (!transactions || typeof transactions !== 'object') {
+    return <p>No transaction data available.</p>; // Handle missing data gracefully
+  }
+
   const current_currency =
     currency === 0
       ? '€'

@@ -64,8 +64,14 @@ export async function get_jwt(userId) {
   return get_jwt.data;
 }
 
-export async function delete_jwt(userId) {
+export async function delete_jwt(jwt, userId) {
   const get_jwt = await axios.delete(
     `${API_URL}/api/usertoken/delete/${userId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+      withCredentials: true, // Ensures session are sent
+    },
   );
 }

@@ -24,6 +24,9 @@ ChartJS.register(
 );
 
 const MonthBarChart = ({ transactions, currency }) => {
+  if (!transactions || typeof transactions !== 'object') {
+    return <p>No transaction data available.</p>; // Handle missing data gracefully
+  }
   const current_currency =
     currency === 0
       ? '€'

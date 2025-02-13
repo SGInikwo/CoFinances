@@ -74,8 +74,6 @@ const Analytics = async ({ searchParams }: PageProps) => {
   current_analysis = current_analysis_list;
   past_analysis = past_analysis_list;
 
-  // console.log("next", past_analysis)
-
   return (
     <section className="home">
       <div className="home-content">
@@ -114,14 +112,14 @@ const Analytics = async ({ searchParams }: PageProps) => {
         <div className="flex w-full h-full gap-2 max-md:flex-col">
           <div className="border-gray-300 w-full h-full shadow-chart border rounded-3xl p-4">
             <MonthBarChart
-              transactions={past_analysis.last_5}
+              transactions={past_analysis?.last_5}
               currency={loggedIn.currency}
             />
           </div>
 
           <div className="border-gray-300 w-full h-96 shadow-chart border rounded-3xl p-4">
             <MonthPolarChart
-              transactions={past_analysis.top_3}
+              transactions={past_analysis?.top_3}
               currency={loggedIn.currency}
             />
           </div>

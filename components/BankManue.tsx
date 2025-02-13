@@ -81,6 +81,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
         const parsedData: RowData[] = XLSX.utils.sheet_to_json<RowData>(sheet); // Convert the sheet to JSON
 
         setData(parsedData);
+        console.log('data', parsedData);
 
         // Send parsed data to the FastAPI backend
         try {
@@ -99,8 +100,6 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
           } else {
           }
 
-          console.log('name', API_URL);
-
           const response = await send_transactions(
             jwt,
             parsedData,
@@ -117,7 +116,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
             description: 'Your data is being saved.',
           });
           setIsLoading(false);
-          window.location.reload();
+          // window.location.reload();
         } catch (error) {
           console.error('Error sending data to server:', error);
           toast({
@@ -127,6 +126,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
             description: 'There was a problem with your request.',
           });
           setIsLoading(false);
+          // window.location.reload();
         }
       };
 
@@ -237,11 +237,13 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
                               rel="noopener noreferrer" // Security for _blank
                               className="flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-full justify-center"
                             >
-                              <div className="relative size-6">
+                              <div className="size-8">
                                 <Image
                                   src={bank.imgURL} // Update this if you want to include an image for each bank
                                   alt={bank.label}
-                                  fill
+                                  width={80}
+                                  height={80}
+                                  // fill
                                 />
                               </div>
                               {/* <p className={cn("sidebar-label", { "!text-white": isActive })}> */}

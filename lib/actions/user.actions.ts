@@ -7,7 +7,7 @@ import { parseStringify } from '../utils';
 import bcrypt from 'bcryptjs';
 import {
   delete_jwt,
-  get_cookie,
+  get_jwt,
   initiate_jwt,
   isJWTExpired,
   send_jwt,
@@ -19,6 +19,22 @@ const {
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
   NEXT_PUBLIC_FASTAPI_URL: API_URL,
 } = process.env;
+
+export const getAllUsers = async () => {
+  try {
+    const { database } = await createAdminClient();
+
+    const user = await database.listDocuments(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      // [Query.notEqual('authLevel', [-1])],
+    );
+
+    return parseStringify(user.documents);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const getUserInfo = async ({ userId }: getUserInfoProps) => {
   try {
@@ -34,43 +50,6 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
   } catch (error) {
     console.log(error);
   }
-};
-
-export const updateuserCurrency = async ({
-  newCurrency,
-}: {
-  newCurrency: string;
-}) => {
-  const { account, database } = await createAdminClient();
-  const user = await getLoggedInUser();
-
-  // Convert to a number if needed (or you can keep it as a string if that’s the format)
-  const newCurrencyNumber = Number(newCurrency);
-
-  // Fetch the current user document
-  const currentUser = await database.getDocument(
-    DATABASE_ID!,
-    USER_COLLECTION_ID!,
-    user.$id,
-  );
-
-  // Remove internal fields like $databaseId
-  const { $databaseId, $collectionId, ...userData } = currentUser;
-
-  // console.log("Updating currency to: ", newCurrencyNumber);
-
-  // Update the user document with the new currency value
-  const updatedUser = await database.updateDocument(
-    DATABASE_ID!,
-    USER_COLLECTION_ID!,
-    user.$id,
-    {
-      ...userData,
-      currency: newCurrencyNumber, // Update currency field
-    },
-  );
-
-  return parseStringify(updatedUser); // Returning the updated document
 };
 
 export const signIn = async ({ email, password }: signInProps) => {
@@ -154,6 +133,8 @@ export const signUp = async ({
         ...userData,
         userId: newUserAccount.$id,
         authLevel: 1,
+        isSwapped: 0,
+        swapCode: 0,
       },
       [Permission.read(Role.user(newUserAccount.$id))],
     );
@@ -184,7 +165,19 @@ export const logoutAccount = async () => {
   try {
     const user = await getLoggedInUser();
 
-    await delete_jwt(user['$id']);
+    if (user.isSwapped === 1) {
+      await swapLogout();
+    }
+
+    let jwt = await get_jwt(user.$id);
+
+    if (await isJWTExpired(jwt)) {
+      jwt = await create_JWT();
+      await send_jwt(jwt);
+      jwt = await get_jwt(user.$id);
+    }
+
+    await delete_jwt(jwt, user['$id']);
 
     const { account } = await createSessionClient();
 
@@ -196,6 +189,218 @@ export const logoutAccount = async () => {
   } catch (error) {
     console.error('Error', error);
   }
+};
+
+export const swapUsers = async ({ code, swapUser }) => {
+  try {
+    const { account } = await createAdminClient();
+    const user = await getLoggedInUser();
+    const newCode = Number(code);
+
+    if (newCode === swapUser.swapCode && swapUser.authLevel === -1) {
+      if (user.isSwapped === 1) {
+        await returnSwap({ userId: user.$id });
+      } else {
+        await fromSwapId({ swapUserId: swapUser.$id });
+      }
+
+      await logoutAccount();
+      console.log('User logged out successfully');
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const session = await account.createEmailPasswordSession(
+        swapUser.email,
+        swapUser.password,
+      );
+
+      return session;
+    } else {
+      console.error('Error Logging in');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error', error);
+    return null;
+  }
+};
+
+export const swapForward = async ({ session }) => {
+  // Check for existing `appwrite-session` cookie
+  const existingSessionCookie = cookies().get('appwrite-session');
+
+  if (!existingSessionCookie) {
+    console.log('I want to see');
+    // Set `appwrite-session` cookie if not already set
+    cookies().set('appwrite-session', session.secret, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: true,
+    });
+  }
+
+  const user = await getUserInfo({ userId: session.userId });
+  const jwt = await create_JWT();
+
+  await initiate_jwt(jwt);
+
+  return parseStringify(user);
+};
+
+export const fromSwapId = async ({ swapUserId }: { swapUserId: string }) => {
+  const { database } = await createAdminClient();
+
+  // Fetch the current user document
+  const swapUser = await database.getDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    swapUserId,
+  );
+
+  // Remove internal fields like $databaseId
+  const { $databaseId, $collectionId, ...userData } = swapUser;
+
+  // Update the user document with the new currency value
+  const updatedUser = await database.updateDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    swapUserId,
+    {
+      ...userData,
+      isSwapped: 1,
+      fromSwapId: (await getLoggedInUser()).firstName, // Update swapCode field
+    },
+  );
+
+  return parseStringify(updatedUser); // Returning the updated document
+};
+
+export const returnSwap = async ({ userId }: { userId: string }) => {
+  const { database } = await createAdminClient();
+
+  // Fetch the current user document
+  const swapUser = await database.getDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    userId,
+  );
+
+  // Remove internal fields like $databaseId
+  const { $databaseId, $collectionId, ...userData } = swapUser;
+
+  // Update the user document with the new currency value
+  const updatedUser = await database.updateDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    userId,
+    {
+      ...userData,
+      isSwapped: 0,
+      fromSwapId: '', // Update swapCode field
+    },
+  );
+
+  return parseStringify(updatedUser); // Returning the updated document
+};
+
+export const swapLogout = async () => {
+  try {
+    const { database } = await createAdminClient();
+    const user = await getLoggedInUser();
+
+    // Fetch the current user document
+    const swapUser = await database.getDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      user.$id,
+    );
+
+    // Remove internal fields like $databaseId
+    const { $databaseId, $collectionId, ...userData } = swapUser;
+
+    // Update the user document with the new currency value
+    const updatedUser = await database.updateDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      user.$id,
+      {
+        ...userData,
+        isSwapped: 0,
+        fromSwapId: '', // Update swapCode field
+      },
+    );
+
+    return parseStringify(updatedUser); // Returning the updated document
+  } catch (error) {
+    console.error('Error', error);
+  }
+};
+
+export const updateUserSwapCode = async ({ newCode }: { newCode: string }) => {
+  const { database } = await createAdminClient();
+  const user = await getLoggedInUser();
+
+  // Convert to a number if needed (or you can keep it as a string if that’s the format)
+  const newCodeNumber = Number(newCode);
+
+  // Fetch the current user document
+  const currentUser = await database.getDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    user.$id,
+  );
+
+  // Remove internal fields like $databaseId
+  const { $databaseId, $collectionId, ...userData } = currentUser;
+  console.log('lets see', newCodeNumber);
+  // Update the user document with the new currency value
+  const updatedUser = await database.updateDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    user.$id,
+    {
+      ...userData,
+      swapCode: newCodeNumber, // Update swapCode field
+    },
+  );
+
+  return parseStringify(updatedUser); // Returning the updated document
+};
+
+export const updateuserCurrency = async ({
+  newCurrency,
+}: {
+  newCurrency: string;
+}) => {
+  const { account, database } = await createAdminClient();
+  const user = await getLoggedInUser();
+
+  // Convert to a number if needed (or you can keep it as a string if that’s the format)
+  const newCurrencyNumber = Number(newCurrency);
+
+  // Fetch the current user document
+  const currentUser = await database.getDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    user.$id,
+  );
+
+  // Remove internal fields like $databaseId
+  const { $databaseId, $collectionId, ...userData } = currentUser;
+
+  // Update the user document with the new currency value
+  const updatedUser = await database.updateDocument(
+    DATABASE_ID!,
+    USER_COLLECTION_ID!,
+    user.$id,
+    {
+      ...userData,
+      currency: newCurrencyNumber, // Update currency field
+    },
+  );
+
+  return parseStringify(updatedUser); // Returning the updated document
 };
 
 export async function create_JWT(account?: any) {
