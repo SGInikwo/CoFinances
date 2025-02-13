@@ -43,4 +43,9 @@ export const bankLinks = [
       'https://sso.revolut.com/signin?client_id=o3r08ao16zvdlf2y5fdc&code_challenge=9ABUGZg19r6XIxhl36nEizn9-xFfp6d5C2Y007n8eAA&code_challenge_method=S256&response_type=code&redirect_uri=https%3A%2F%2Fapp.revolut.com%2Fhome&response_mode=query&state=J4JKnHuvCO1Dq9mN',
     label: 'Revolut',
   },
+  {
+    imgURL: '/icons/kbstar.png',
+    bankURL: 'https://obank.kbstar.com/quics?page=omweb&amp;QViewPC=N',
+    label: 'KB Star',
+  },
 ];
