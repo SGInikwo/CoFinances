@@ -21,6 +21,7 @@ import { Loader2 } from 'lucide-react';
 import {
   push_data,
   send_transactions,
+  update_transaction_currency,
 } from '@/lib/actions/transaction.actions';
 import CurrencyMenue from './CurrencyMenue';
 
@@ -81,7 +82,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
         const parsedData: RowData[] = XLSX.utils.sheet_to_json<RowData>(sheet); // Convert the sheet to JSON
 
         setData(parsedData);
-        console.log('data', parsedData);
+        // console.log('data', parsedData);
 
         // Send parsed data to the FastAPI backend
         try {
@@ -106,6 +107,8 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
             clientCurrency,
           );
 
+          // await update_transaction_currency(jwt, currency);
+
           // await push_data(jwt)
 
           setIsOpen(false);
@@ -116,7 +119,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
             description: 'Your data is being saved.',
           });
           setIsLoading(false);
-          // window.location.reload();
+          window.location.reload();
         } catch (error) {
           console.error('Error sending data to server:', error);
           toast({
@@ -126,7 +129,7 @@ const BankManue: React.FC<BankManueProps> = ({ setIsOpen, currency }) => {
             description: 'There was a problem with your request.',
           });
           setIsLoading(false);
-          // window.location.reload();
+          window.location.reload();
         }
       };
 

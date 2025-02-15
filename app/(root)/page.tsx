@@ -91,6 +91,8 @@ const Home = async ({ searchParams }: PageProps) => {
   const percExpenses = (monthlyExpenses - earliestExpenses) / earliestExpenses;
   const percSavings = (monthlySavings - earliestSavings) / earliestSavings;
 
+  // console.log('mounts', summary_month);
+
   return (
     <section className="home">
       <div className="home-content">

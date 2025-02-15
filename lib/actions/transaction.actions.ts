@@ -62,7 +62,7 @@ export async function send_transactions(jwt, parsedData, clientCurrency) {
     transactions: parsedData, // Ensure parsedData matches the format of Transactions_ing
     clientCurrency: String(clientCurrency), // Ensure clientCurrency is valid (string)
   };
-  console.log(payload);
+  // console.log(payload);
   const response = await axios.post(`${API_URL}/api/transactions/`, payload, {
     headers: {
       Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
