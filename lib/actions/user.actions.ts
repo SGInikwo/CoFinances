@@ -88,6 +88,12 @@ export const signIn = async ({ email, password }: signInProps) => {
 
       const user = await getUserInfo({ userId: session.userId });
 
+      const check_jwt = await get_jwt(session.userId);
+
+      if (check_jwt !== false) {
+        await delete_jwt(check_jwt, session.userId);
+      }
+
       const jwt = await create_JWT();
 
       await initiate_jwt(jwt);

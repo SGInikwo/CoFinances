@@ -10,7 +10,7 @@ export async function convert_currency(base, target) {
   return amount.data;
 }
 
-export async function push_data(jwt) {
+export async function push_summary_data(jwt) {
   const response = await axios.post(`${API_URL}/api/summary/`, null, {
     headers: {
       Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
@@ -73,6 +73,25 @@ export async function send_transactions(jwt, parsedData, clientCurrency) {
   return response.data;
 }
 
+export async function update_category(jwt, parsedData) {
+  const payload = {
+    update: parsedData, // Ensure parsedData matches the format of Transactions_ing
+  };
+  // console.log(payload);
+  const response = await axios.post(
+    `${API_URL}/api/transactions/update_category`,
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+      },
+      withCredentials: true, // Ensures session are sent
+    },
+  );
+
+  return response.data;
+}
+
 export async function update_transaction_currency(jwt, clientCurrency) {
   const response = await axios.post(
     `${API_URL}/api/transactions/update_balances-${clientCurrency}`,
@@ -112,6 +131,21 @@ export async function get_past_analysis(jwt, month, year) {
       withCredentials: true, // Ensures session are sent
     },
   );
+
+  return response.data;
+}
+
+export async function send_goals(jwt, parsedData) {
+  const payload = {
+    goals: parsedData, // Ensure parsedData matches the format of Transactions_ing
+  };
+  console.log('seee', parsedData);
+  const response = await axios.post(`${API_URL}/api/goals/`, payload, {
+    headers: {
+      Authorization: `Bearer ${jwt}`, // Add JWT to Authorization header
+    },
+    withCredentials: true, // Ensures session are sent
+  });
 
   return response.data;
 }

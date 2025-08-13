@@ -16,6 +16,16 @@ bun dev
 npm run lint
 # or
 npm run format
+
+
+fnm install 18
+fnm use 18
+
+# file
+fnm env > .env.fnm
+#or
+echo "18" > .node-version
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

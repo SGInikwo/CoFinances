@@ -73,7 +73,6 @@ const Analytics = async ({ searchParams }: PageProps) => {
   summary_month = monthList;
   current_analysis = current_analysis_list;
   past_analysis = past_analysis_list;
-
   return (
     <section className="home">
       <div className="home-content">

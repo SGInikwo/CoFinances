@@ -19,13 +19,19 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { create_JWT, updateuserCurrency } from '@/lib/actions/user.actions';
 import {
-  push_data,
+  push_summary_data,
   update_transaction_currency,
 } from '@/lib/actions/transaction.actions';
 import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
 import CurrencyLoader from './CurrencyLoader';
 import CurrencyMenue from './CurrencyMenue';
 import MonthCarousel from './MonthCarousel';
+import {
+  push_budget_data,
+  update_budget_currency,
+  update_budget_summary_currency,
+} from '@/lib/actions/budget.actions';
+import { update_goals_currency } from '@/lib/actions/goal.actions';
 
 const currencies = [
   { label: 'EUR', value: '0' },
@@ -55,15 +61,18 @@ const HeaderBox = ({
 
       if (await isJWTExpired(jwt)) {
         jwt = await create_JWT();
-
         await send_jwt(jwt);
-
         jwt = await get_jwt(userInfo);
       }
 
       setOpenDialog(true);
       await update_transaction_currency(jwt, selectedCurrency);
-      await push_data(jwt);
+      await update_budget_currency(jwt, selectedCurrency);
+      // await update_budget_summary_currency(jwt, selectedCurrency);
+      await update_goals_currency(jwt, selectedCurrency);
+
+      await push_summary_data(jwt);
+      await push_budget_data(jwt);
       setOpenDialog(false);
 
       window.location.reload();

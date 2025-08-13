@@ -1,4 +1,5 @@
 import TransactionTable from '@/components/TransactionTable';
+import { get_category_name } from '@/lib/actions/category.actions';
 import {
   create_JWT,
   get_all_transactionList,
@@ -27,6 +28,7 @@ const Transactions = async ({ searchParams }: PageProps) => {
   }
 
   const transactions = await get_all_transactionList(jwt);
+  const categoryNames = await get_category_name(jwt);
   return (
     <section className="home">
       <div className="home-content">
@@ -37,7 +39,9 @@ const Transactions = async ({ searchParams }: PageProps) => {
           transactions={transactions}
           currency={loggedIn?.currency}
           page={Number(currentPage)}
-          rowPerPage={15}
+          rowPerPage={20}
+          editable={true}
+          categoryOptions={categoryNames}
         />
       </div>
     </section>

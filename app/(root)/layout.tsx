@@ -22,8 +22,8 @@ export default async function RootLayout({
     <main className="flex h-screen w-full font-">
       <Sidebar user={loggedIn} />
 
-      <div className="flex size-full flex-col">
-        <div className="root-layout bg-financeSidebar">
+      <div className="flex flex-col flex-1 h-screen overflow-y-auto">
+        <div className="root-layout bg-financeSidebar flex items-center gap-2 p-4">
           <Image src="/icons/logo.svg" width={30} height={30} alt="Menu icon" />
           <div>
             <MobileNav user={loggedIn} />

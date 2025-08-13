@@ -33,6 +33,19 @@ export function formatAmount(
 
 export const parseStringify = (value: any) => JSON.parse(JSON.stringify(value));
 
+export const budgetFrom = (type: string) =>
+  z.object({
+    // Saving
+    amount: type !== 'saving' ? z.string().optional() : z.string(),
+    startMonth: type !== 'saving' ? z.string().optional() : z.string(),
+    startYear: type !== 'saving' ? z.string().optional() : z.string(),
+    endMonth: type !== 'saving' ? z.string().optional() : z.string(),
+    endYear: type !== 'saving' ? z.string().optional() : z.string(),
+
+    categoryName: type !== 'saving' ? z.string() : z.string().optional(),
+    categoryColor: type !== 'saving' ? z.string() : z.string().optional(),
+  });
+
 export const authFormSchema = (type: string) =>
   z
     .object({

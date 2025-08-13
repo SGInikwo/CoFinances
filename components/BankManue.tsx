@@ -19,7 +19,7 @@ import { Separator } from './ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import {
-  push_data,
+  // push_data,
   send_transactions,
   update_transaction_currency,
 } from '@/lib/actions/transaction.actions';
