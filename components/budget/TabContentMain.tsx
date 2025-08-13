@@ -30,6 +30,8 @@ const TabContentMain = ({
     window.history.replaceState(null, '', `#${value}`);
   };
 
+  const sortedGoals = [...goals].sort((a, b) => a.date.localeCompare(b.date));
+
   return (
     <Tabs
       value={selectedValue} // controlled prop, NOT defaultValue
@@ -45,7 +47,11 @@ const TabContentMain = ({
         userCurrency={userCurrency}
         next_month_goal={next_month_goal}
       />
-      <TabContentGoals goals={goals} page={page} userCurrency={userCurrency} />
+      <TabContentGoals
+        goals={sortedGoals}
+        page={page}
+        userCurrency={userCurrency}
+      />
       <TabContentBudget
         budget={budget}
         categoryNames={categoryNames}

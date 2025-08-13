@@ -52,9 +52,6 @@ const Budget = async ({ searchParams }: PageProps) => {
   const next_month_goal =
     goals.find((goal) => goal.date === nextMonthStr) || null;
 
-  console.log('currentMonth:', goals.length);
-  console.log('nextMonthStr:', nextMonthStr);
-
   return (
     <section>
       <TabContentMain
