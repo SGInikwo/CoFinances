@@ -63,7 +63,7 @@ const TabContentDashboard = ({
             </section>
             <div className="grid grid-cols-3 gap-1 w-full max-md:grid-cols-1">
               <GoalsBalance
-                type={'Actual Balance' + month_year}
+                type={'Actual Balance'}
                 totalCurrentBalance={current_goal.actualBalance}
                 totalPreviousBalance={0}
                 totalTransactions={0}
