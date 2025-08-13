@@ -10,14 +10,14 @@ export const sidebarLinks = [
     label: 'Analytics',
   },
   {
-    imgURL: '/icons/transactions.svg',
-    route: '/transactions',
-    label: 'Transctions',
-  },
-  {
     imgURL: '/icons/budget.svg',
     route: '/budget',
     label: 'Budget',
+  },
+  {
+    imgURL: '/icons/transactions.svg',
+    route: '/transactions',
+    label: 'Transctions',
   },
   {
     imgURL: '/icons/swap-user.svg',

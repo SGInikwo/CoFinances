@@ -9,21 +9,23 @@ const TransactionsInput = ({ currency }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <div className="sidebar-link hover:bg-financeGradient hover:text-white hover:cursor-pointer md:justify-center md:items-center">
+    <div className="sidebar-link hover:text-white hover:cursor-pointer md:justify-center md:items-center">
       {/* Upload File */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <div className="flex gap-3 w-full h-full">
+          <div className="group flex gap-3 w-full h-full">
             <div className="flex relative size-6 md:justify-center md:items-center">
               <Image
-                src="icons/upload.svg" // Replace with your image path
+                src="icons/upload.svg"
                 alt="Upload File"
                 style={{ cursor: 'pointer' }}
                 className="absolute inset-0 m-auto object-contain"
                 fill
               />
             </div>
-            <p className="sidebar-label">Upload</p>
+            <p className="sidebar-label group-hover:text-financeGradient">
+              Upload
+            </p>
           </div>
         </DialogTrigger>
 

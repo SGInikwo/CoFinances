@@ -12,10 +12,11 @@ import {
   get_transactionList,
   getLoggedInUser,
 } from '@/lib/actions/user.actions';
-import { get_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
+import { get_jwt, initiate_jwt, isJWTExpired, send_jwt } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import MonthCarousel from '@/components/MonthCarousel';
 import ExpensesGraph from '@/components/ExpensesGraph';
+import { redirect } from 'next/navigation';
 
 interface PageProps {
   searchParams: {
@@ -45,7 +46,15 @@ const Home = async ({ searchParams }: PageProps) => {
   let summary_month = [];
 
   if (!loggedIn) {
-    notFound(); // or handle it appropriately
+    // notFound(); // or handle it appropriately
+    redirect('/sign-in');
+  } else {
+    const check_jwt = await get_jwt(loggedIn.userId);
+
+    if (check_jwt === false) {
+      const new_jwt = await create_JWT();
+      await initiate_jwt(new_jwt);
+    }
   }
 
   let jwt = await get_jwt(loggedIn?.$id);
