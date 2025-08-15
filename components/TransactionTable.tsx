@@ -88,7 +88,6 @@ export const TransactionTable = ({
       (t) => t.$id === updated[globalIndex].$id,
     );
 
-    // Check if the category changed compared to the original
     const isChanged = original && id !== original.categoryId.$id;
 
     updated[globalIndex] = {
@@ -96,10 +95,10 @@ export const TransactionTable = ({
       categoryId: {
         ...updated[globalIndex].categoryId,
         $id: id,
-        name: name,
+        name,
         colour: isChanged
           ? '#f97316'
-          : original?.categoryId.colour || '#000000', // Orange if changed, else original colour
+          : original?.categoryId.colour || '#000000',
       },
     };
 
@@ -114,22 +113,16 @@ export const TransactionTable = ({
       .map((entry, index) => {
         const original = transactions[index];
         if (entry.categoryId.$id !== original.categoryId.$id) {
-          return {
-            id: entry.$id,
-            categoryId: entry.categoryId.$id,
-          };
+          return { id: entry.$id, categoryId: entry.categoryId.$id };
         }
         return null;
       })
       .filter(Boolean);
 
     if (changedEntries.length === 0) {
-      console.log('No changes to save');
       setIsLoading(false);
       return;
     }
-
-    console.log('Changed entries:', changedEntries);
 
     try {
       let jwt = await get_jwt(loggedIn?.$id);
@@ -144,7 +137,7 @@ export const TransactionTable = ({
       toast({
         duration: 1000,
         variant: 'succes',
-        title: 'Budget is send!',
+        title: 'Budget is sent!',
         description: 'Your budget is being saved.',
       });
       setIsLoading(false);
@@ -158,86 +151,136 @@ export const TransactionTable = ({
       });
       setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
     <div className="space-y-4">
-      <Table className="table-fixed w-full">
-        <TableHeader>
-          <TableRow className="bg-gray-50">
-            <TableHead className="text-center">Category</TableHead>
-            <TableHead>Transaction</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Date</TableHead>
-          </TableRow>
-        </TableHeader>
+      {/* Desktop Table */}
+      <div className="hidden md:block">
+        <Table className="table-fixed w-full">
+          <TableHeader>
+            <TableRow className="bg-gray-50">
+              <TableHead className="text-center">Category</TableHead>
+              <TableHead>Transaction</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Date</TableHead>
+            </TableRow>
+          </TableHeader>
 
-        <TableBody>
-          {currentTransactions.map((t, index) => {
-            const convertedAmount = formatAmount(Number(t.amount), currency);
+          <TableBody>
+            {currentTransactions.map((t, index) => {
+              const convertedAmount = formatAmount(Number(t.amount), currency);
 
-            return (
-              <TableRow key={t.$id}>
-                <TableCell
-                  onClick={() => editable && setEditingRowIndex(index)}
-                  className="text-center align-middle"
-                >
-                  {editable && editingRowIndex === index ? (
-                    <select
-                      className="border rounded px-2 py-1 w-full text-center"
-                      value={t.categoryId?.$id ?? ''}
-                      onChange={(e) =>
-                        handleCategoryChange(index, e.target.value)
-                      }
-                      onBlur={() => setEditingRowIndex(null)}
-                      autoFocus
-                    >
-                      {categoryOptions.map(([name, id]) => (
-                        <option key={id} value={id}>
-                          {name}
-                        </option>
-                      ))}
-                    </select>
-                  ) : t.categoryId?.name ? (
-                    <span
-                      style={{
-                        border: `1px solid ${t.categoryId.colour}`,
-                        padding: '4px 8px',
-                        borderRadius: '30px',
-                        display: 'inline-block',
-                        color: t.categoryId.colour,
-                        textAlign: 'center',
-                      }}
-                      className="mx-auto"
-                    >
-                      {t.categoryId.name}
-                    </span>
-                  ) : (
-                    <span className="text-gray-400 italic block text-center">
-                      No category
-                    </span>
-                  )}
-                </TableCell>
+              return (
+                <TableRow key={t.$id}>
+                  <TableCell
+                    onClick={() => editable && setEditingRowIndex(index)}
+                    className="text-center align-middle"
+                  >
+                    {editable && editingRowIndex === index ? (
+                      <select
+                        className="border rounded px-2 py-1 w-full text-center"
+                        value={t.categoryId?.$id ?? ''}
+                        onChange={(e) =>
+                          handleCategoryChange(index, e.target.value)
+                        }
+                        onBlur={() => setEditingRowIndex(null)}
+                        autoFocus
+                      >
+                        {categoryOptions.map(([name, id]) => (
+                          <option key={id} value={id}>
+                            {name}
+                          </option>
+                        ))}
+                      </select>
+                    ) : t.categoryId?.name ? (
+                      <span
+                        style={{
+                          border: `1px solid ${t.categoryId.colour}`,
+                          padding: '4px 8px',
+                          borderRadius: '30px',
+                          display: 'inline-block',
+                          color: t.categoryId.colour,
+                        }}
+                      >
+                        {t.categoryId.name}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 italic block text-center">
+                        No category
+                      </span>
+                    )}
+                  </TableCell>
 
-                <TableCell>
-                  <div>
-                    <h1>{t.recipient}</h1>
-                  </div>
-                </TableCell>
+                  <TableCell>{t.recipient}</TableCell>
+                  <TableCell>{convertedAmount}</TableCell>
+                  <TableCell>{t.transactionType}</TableCell>
+                  <TableCell>{t.date}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
 
-                <TableCell>{convertedAmount}</TableCell>
+      {/* Mobile Card Layout */}
+      <div className="md:hidden space-y-3">
+        {currentTransactions.map((t, index) => {
+          const convertedAmount = formatAmount(Number(t.amount), currency);
 
-                <TableCell>{t.transactionType}</TableCell>
-
-                <TableCell>{t.date}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+          return (
+            <div
+              key={t.$id}
+              className="border rounded-lg p-3 bg-white shadow-sm flex flex-col gap-2"
+            >
+              <div className="flex justify-between items-center">
+                <strong>Category:</strong>
+                {editable && editingRowIndex === index ? (
+                  <select
+                    className="border rounded px-2 py-1"
+                    value={t.categoryId?.$id ?? ''}
+                    onChange={(e) =>
+                      handleCategoryChange(index, e.target.value)
+                    }
+                    onBlur={() => setEditingRowIndex(null)}
+                    autoFocus
+                  >
+                    {categoryOptions.map(([name, id]) => (
+                      <option key={id} value={id}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <span
+                    className="px-3 py-1 rounded-full text-sm"
+                    style={{
+                      border: `1px solid ${t.categoryId.colour}`,
+                      color: t.categoryId.colour,
+                    }}
+                    onClick={() => editable && setEditingRowIndex(index)}
+                  >
+                    {t.categoryId?.name || 'No category'}
+                  </span>
+                )}
+              </div>
+              <div className="flex justify-between">
+                <strong>Transaction:</strong> <span>{t.recipient}</span>
+              </div>
+              <div className="flex justify-between">
+                <strong>Amount:</strong> <span>{convertedAmount}</span>
+              </div>
+              <div className="flex justify-between">
+                <strong>Type:</strong> <span>{t.transactionType}</span>
+              </div>
+              <div className="flex justify-between">
+                <strong>Date:</strong> <span>{t.date}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
       <Pagination page={page} totalPages={totalPages} />
 
