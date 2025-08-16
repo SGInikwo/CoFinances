@@ -145,7 +145,7 @@ export const signUp = async ({
       [Permission.read(Role.user(newUserAccount.$id))],
     );
 
-    await create_JWT();
+    // await create_JWT();
 
     return parseStringify(newUser);
   } catch (error) {

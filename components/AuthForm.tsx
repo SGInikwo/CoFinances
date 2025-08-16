@@ -55,7 +55,22 @@ const AuthForm = ({ type }: { type: string }) => {
 
         setuser(newUser);
 
-        if (newUser) router.push('/');
+        if (newUser) {
+          toast({
+            duration: 1000,
+            variant: 'succes',
+            title: 'Loggin succes',
+            description: 'Your data is being saved.',
+          });
+          router.push('/');
+        } else {
+          toast({
+            duration: 3000,
+            variant: 'destructive',
+            title: 'Email and Password combination incorrect',
+            description: 'There was a problem with your request.',
+          });
+        }
       }
       // Sign In
       if (type === 'sign-in') {

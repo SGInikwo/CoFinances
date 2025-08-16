@@ -13,8 +13,16 @@ export default async function RootLayout({
 }>) {
   const loggedIn = await getLoggedInUser();
 
-  if (!loggedIn || loggedIn.authLevel !== -1) {
-    if (loggedIn) await logoutAccount();
+  if (!loggedIn) {
+    redirect('/sign-in');
+  }
+
+  if (loggedIn.authLevel !== -1) {
+    try {
+      await logoutAccount();
+    } catch (e) {
+      console.error('No active session to log out', e);
+    }
     redirect('/sign-in');
   }
 
